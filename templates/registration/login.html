@@ -4,120 +4,65 @@
 
 {% block extra_head %}
 <style>
-.auth-scene {
-    min-height: 88vh;
+.auth-container {
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
-    position: relative;
-    overflow: hidden;
 }
-/* Animated mesh gradient backdrop */
-.auth-mesh {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background:
-        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(139,92,246,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 80% 70%, rgba(34,211,238,0.12) 0%, transparent 70%);
-    animation: meshDrift 8s ease-in-out infinite alternate;
-}
-@keyframes meshDrift {
-    from { background-position: 0% 0%; }
-    to   { background-position: 5% 5%; }
-}
-.auth-box {
+.auth-card {
     width: 100%;
-    max-width: 440px;
-    position: relative;
-    z-index: 1;
-    padding: 2.75rem 2.25rem;
-    animation: cardFloat 0.6s cubic-bezier(0.16,1,0.3,1) both;
-}
-@keyframes cardFloat {
-    from { opacity:0; transform:translateY(32px) scale(0.97); }
-    to   { opacity:1; transform:translateY(0) scale(1); }
-}
-.auth-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent-cyan);
-    margin-bottom: 0.625rem;
+    max-width: 400px;
+    padding: 3rem 2.5rem;
+    background: #FFFFFF;
 }
 .auth-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 1.875rem;
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.5rem;
     color: var(--text-primary);
-    letter-spacing: -0.025em;
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
 }
-.auth-sub {
+.auth-subtitle {
     font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--text-secondary);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
 }
-.field-group { margin-bottom: 1.125rem; }
-.form-label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 0.8125rem;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 0.4rem;
-}
-.field-error { font-size:0.7rem; color:#f87171; margin-top:0.3rem; font-family:'Inter',sans-serif; }
+.field-group { margin-bottom: 1.25rem; }
+.field-error { font-size: 0.75rem; color: #D46241; margin-top: 0.375rem; font-weight: 400; }
 .non-field-error {
-    border: 1px solid rgba(248,113,113,0.25);
-    background: rgba(248,113,113,0.05);
-    border-radius: 10px;
-    padding: 0.625rem 0.875rem;
-    font-size: 0.8rem;
-    font-family: 'Inter', sans-serif;
-    color: #f87171;
-    margin-bottom: 1.25rem;
-}
-.auth-divider {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.75rem 0;
-}
-.auth-divider::before, .auth-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--glass-border);
-}
-.auth-divider span {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    opacity: 0.5;
-    white-space: nowrap;
+    background: #FFF5F3;
+    border: 1px solid rgba(212,98,65,0.2);
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+    color: #D46241;
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
 }
 .auth-footer {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    margin-top: 2rem;
     text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
 }
-.auth-footer a { color: var(--accent-violet); font-weight: 500; text-decoration: none; transition: opacity 0.15s; }
-.auth-footer a:hover { opacity: 0.8; }
+.auth-footer a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-scene">
-    <div class="auth-mesh"></div>
-    <div class="auth-box glass-card">
-        <p class="auth-eyebrow">ProjectMatch</p>
-        <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-sub">Sign in to find your next cross-functional team.</p>
+<div class="auth-container">
+    <div class="auth-card editorial-card">
+        <h1 class="auth-title">Welcome back.</h1>
+        <p class="auth-subtitle">Sign in to continue building your team.</p>
 
         {% if form.non_field_errors %}
         <div class="non-field-error">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>
@@ -132,15 +77,12 @@
                 {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
             {% endfor %}
-            <button type="submit" id="login-btn"
-                class="btn-primary w-full py-3 rounded-xl"
-                style="margin-top:1.5rem;font-size:0.9375rem;">
-                <span>Sign in →</span>
+            <button type="submit" class="btn-primary w-full mt-4 py-3" style="font-size: 0.9375rem;">
+                Sign In
             </button>
         </form>
 
-        <div class="auth-divider"><span>or</span></div>
-        <p class="auth-footer">New here? <a href="{% url 'signup' %}">Create an account →</a></p>
+        <p class="auth-footer">Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
     </div>
 </div>
 {% endblock %}

@@ -7,254 +7,198 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        /* ─── Design Tokens ─────────────────────────────────── */
+        /* ─── Design Tokens (Editorial Light) ──────────────── */
         :root {
-            --bg-base:       #050810;
-            --bg-elevated:   #0d1117;
-            --glass-fill:    rgba(255,255,255,0.03);
-            --glass-border:  rgba(255,255,255,0.07);
-            --text-primary:  #F0F2FF;
-            --text-secondary:#7A829E;
-            --accent-violet: #8B5CF6;
-            --accent-cyan:   #22D3EE;
-            --accent-amber:  #FF8A3D;
-            --gradient:      linear-gradient(135deg, #8B5CF6 0%, #22D3EE 100%);
-            /* legacy aliases */
-            --ink-navy:      #050810;
-            --paper:         #0d1117;
-            --slate:         #7A829E;
-            --signal-amber:  #FF8A3D;
-            --circuit-teal:  #22D3EE;
+            --bg-base:       #FDFBF7; /* Warm off-white */
+            --bg-elevated:   #FFFFFF;
+            --border-soft:   rgba(35, 35, 35, 0.08);
+            --border-hard:   rgba(35, 35, 35, 0.18);
+            --text-primary:  #181818;
+            --text-secondary:#5B5B5B;
+            --accent-rust:   #D46241;
+            --accent-sage:   #758A70;
+            --accent-ink:    #303030;
+            
+            /* Legacy aliases for JS / components */
+            --glass-fill:    #FFFFFF;
+            --glass-border:  var(--border-soft);
+            --accent-violet: var(--accent-ink);
+            --accent-cyan:   var(--accent-sage);
+            --accent-amber:  var(--accent-rust);
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-base);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(35,35,35,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(35,35,35,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
         }
-        h1,h2,h3,h4,h5,h6,.font-display { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Typography */
+        h1,h2,h3,h4,h5,h6,.font-display { 
+            font-family: 'Instrument Serif', serif; 
+            font-weight: 400; 
+            letter-spacing: -0.01em; 
+        }
         .font-mono-data { font-family: 'JetBrains Mono', monospace; }
         [x-cloak] { display: none !important; }
 
         /* ─── Page transition ────────────────────────────────── */
-        .page-wrapper {
-            animation: pageIn 0.45s ease both;
-        }
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
+        .page-wrapper { animation: pageFade 0.6s ease both; }
+        @keyframes pageFade {
+            from { opacity: 0; filter: blur(4px); }
+            to   { opacity: 1; filter: blur(0); }
         }
 
-        /* ─── Cursor dot (magnetic) ──────────────────────────── */
-        #cursor-dot {
-            position: fixed;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--accent-violet);
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: transform 0.08s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
-            mix-blend-mode: screen;
+        /* ─── Cards & Containers ────────────────────────────── */
+        .editorial-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-soft);
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
-        #cursor-ring {
-            position: fixed;
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(139,92,246,0.4);
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: transform 0.18s ease, width 0.25s ease, height 0.25s ease, border-color 0.2s ease;
-        }
-        body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring {
-            width: 52px; height: 52px;
-            border-color: rgba(139,92,246,0.7);
-        }
-
-        /* ─── Focus ──────────────────────────────────────────── */
-        :focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 3px; }
-
-        /* ─── Glass Card ─────────────────────────────────────── */
-        .glass-card {
-            background: var(--glass-fill);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            box-shadow: 0 4px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: rgba(139,92,246,0.25);
-            box-shadow: 0 8px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.1), inset 0 1px 0 rgba(255,255,255,0.06);
-        }
-
-        /* ─── 3D tilt card ───────────────────────────────────── */
-        .tilt-card {
-            transform-style: preserve-3d;
-            will-change: transform;
-        }
-
-        /* ─── Gradient text ──────────────────────────────────── */
-        .gradient-text {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* ─── Primary button ─────────────────────────────────── */
-        .btn-primary {
-            background: linear-gradient(135deg, #8B5CF6 0%, #22D3EE 100%);
-            color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.01em;
-            border: none;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, #a78bfa 0%, #67e8f9 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .btn-primary:hover::before { opacity: 1; }
-        .btn-primary:hover {
+        .editorial-card:hover {
+            box-shadow: 0 12px 32px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.03);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(139,92,246,0.45), 0 0 0 1px rgba(139,92,246,0.3);
         }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-primary span { position: relative; z-index: 1; }
 
-        /* ─── Secondary button ───────────────────────────────── */
+        /* ─── Buttons ────────────────────────────────────────── */
+        .btn-primary {
+            background: var(--text-primary);
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border: 1px solid var(--text-primary);
+            border-radius: 2px;
+            padding: 0.625rem 1.25rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background: #000000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
         .btn-secondary {
             background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--glass-border);
-            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
-            transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 0.875rem;
+            border: 1px solid var(--border-hard);
+            border-radius: 2px;
+            padding: 0.625rem 1.25rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
         .btn-secondary:hover {
-            border-color: rgba(139,92,246,0.5);
-            color: var(--text-primary);
-            box-shadow: 0 0 20px rgba(139,92,246,0.1);
+            border-color: var(--text-primary);
+            background: rgba(0,0,0,0.02);
         }
 
         /* ─── Form inputs ────────────────────────────────────── */
         .form-input {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
+            background: #FFFFFF;
+            border: 1px solid var(--border-hard);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             font-size: 0.875rem;
             padding: 0.625rem 0.875rem;
-            border-radius: 10px;
+            border-radius: 2px;
             width: 100%;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .form-input:focus {
             outline: none;
-            border-color: var(--accent-cyan);
-            background: rgba(34,211,238,0.04);
-            box-shadow: 0 0 0 4px rgba(34,211,238,0.1);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 1px var(--text-primary);
         }
-        .form-input option { background: var(--bg-elevated); color: var(--text-primary); }
-
-        /* ─── Skill pill ─────────────────────────────────────── */
-        .skill-pill {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.62rem;
+        
+        .form-label {
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--accent-cyan);
-            background: rgba(34,211,238,0.07);
-            border: 1px solid rgba(34,211,238,0.18);
-            padding: 2px 8px;
-            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.375rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-
-        /* ─── Score label ────────────────────────────────────── */
-        .score-label { font-family: 'JetBrains Mono', monospace; color: var(--accent-amber); font-weight: 500; }
-
-        /* ─── Match node (legacy alias) ─────────────────────── */
-        .match-node { background: var(--glass-fill); border: 1px solid var(--glass-border); }
 
         /* ─── Nav ────────────────────────────────────────────── */
         .site-nav {
-            background: rgba(5,8,16,0.7);
-            border-bottom: 1px solid var(--glass-border);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            background: rgba(253, 251, 247, 0.9);
+            border-bottom: 1px solid var(--border-soft);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         .nav-link {
             font-family: 'Inter', sans-serif;
             font-size: 0.8125rem;
-            font-weight: 500;
+            font-weight: 400;
             color: var(--text-secondary);
             transition: color 0.15s;
             position: relative;
         }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; left: 0; right: 0;
-            height: 1px;
-            background: var(--gradient);
-            transform: scaleX(0);
-            transition: transform 0.2s ease;
-        }
         .nav-link:hover { color: var(--text-primary); }
-        .nav-link:hover::after { transform: scaleX(1); }
         .nav-wordmark {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
+            font-family: 'Instrument Serif', serif;
+            font-weight: 400;
+            font-style: italic;
             color: var(--text-primary);
-            font-size: 1.125rem;
+            font-size: 1.5rem;
             letter-spacing: -0.01em;
+            text-decoration: none;
         }
-        .nav-wordmark span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-        /* ─── Alert ──────────────────────────────────────────── */
+        
+        /* ─── Alerts ─────────────────────────────────────────── */
         .alert-info {
-            background: rgba(34,211,238,0.05);
-            border: 1px solid rgba(34,211,238,0.15);
+            background: #FFFFFF;
+            border-left: 3px solid var(--accent-sage);
+            border-top: 1px solid var(--border-soft);
+            border-right: 1px solid var(--border-soft);
+            border-bottom: 1px solid var(--border-soft);
             color: var(--text-primary);
-            border-radius: 10px;
+            border-radius: 2px;
             padding: 0.75rem 1rem;
             font-size: 0.875rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Custom cursor -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
-
     <!-- ── Navigation ─────────────────────────────────────────── -->
     <nav x-data="{ open: false }" class="site-nav sticky top-0 z-50">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div class="flex h-14 items-center justify-between">
-                <a href="{% url 'home' %}" class="nav-wordmark">Project<span>Match</span></a>
+            <div class="flex h-16 items-center justify-between">
+                <a href="{% url 'home' %}" class="nav-wordmark">ProjectMatch.</a>
 
-                <div class="hidden md:flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-8">
                     {% if user.is_authenticated %}
                         <a href="{% url 'profile_edit' %}" class="nav-link">Profile</a>
                         <a href="{% url 'find_matches' %}" class="nav-link">Connections</a>
@@ -264,14 +208,14 @@
                         </form>
                     {% else %}
                         <a href="{% url 'login' %}" class="nav-link">Sign in</a>
-                        <a href="{% url 'signup' %}" class="btn-primary text-sm px-4 py-1.5 rounded-full">
-                            <span>Get started</span>
+                        <a href="{% url 'signup' %}" class="btn-primary text-xs px-4 py-1.5 rounded-sm">
+                            Join ProjectMatch
                         </a>
                     {% endif %}
                 </div>
 
                 <button @click="open = !open" type="button"
-                    class="md:hidden inline-flex items-center justify-center p-2 text-white/60 hover:text-white transition-colors"
+                    class="md:hidden inline-flex items-center justify-center p-2 text-gray-500 hover:text-gray-900 transition-colors"
                     aria-label="Toggle navigation">
                     <svg class="h-5 w-5" :class="{'hidden': open}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
@@ -284,8 +228,7 @@
         </div>
 
         <div x-show="open" @click.away="open = false" x-cloak
-            class="md:hidden border-t border-white/5 px-4 py-3 space-y-1"
-            style="background:rgba(13,17,23,0.98);">
+            class="md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-1">
             {% if user.is_authenticated %}
                 <a href="{% url 'profile_edit' %}" class="block nav-link py-2">Profile</a>
                 <a href="{% url 'find_matches' %}" class="block nav-link py-2">Connections</a>
@@ -295,15 +238,15 @@
                 </form>
             {% else %}
                 <a href="{% url 'login' %}" class="block nav-link py-2">Sign in</a>
-                <a href="{% url 'signup' %}" class="block btn-primary text-sm px-4 py-2 rounded-full text-center mt-2"><span>Get started</span></a>
+                <a href="{% url 'signup' %}" class="block btn-primary text-sm px-4 py-2 mt-2 text-center">Join ProjectMatch</a>
             {% endif %}
         </div>
     </nav>
 
     <!-- ── Main ───────────────────────────────────────────────── -->
-    <main class="page-wrapper flex-grow {% block main_class %}mx-auto w-full max-w-4xl px-4 sm:px-6 py-10{% endblock %}">
+    <main class="page-wrapper flex-grow {% block main_class %}mx-auto w-full max-w-4xl px-4 sm:px-6 py-12{% endblock %}">
         {% if messages %}
-            <div class="mb-6 space-y-2">
+            <div class="mb-8 space-y-3">
                 {% for message in messages %}
                     <div class="alert-info">{{ message }}</div>
                 {% endfor %}
@@ -313,53 +256,19 @@
     </main>
 
     <!-- ── Footer ─────────────────────────────────────────────── -->
-    <footer style="background:var(--bg-elevated); border-top:1px solid var(--glass-border);" class="py-5">
-        <div class="mx-auto max-w-6xl px-4 text-center" style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--text-secondary); letter-spacing:0.06em; opacity:0.4;">
-            &copy; {% now "Y" %} PROJECTMATCH — FORM ELITE CROSS-FUNCTIONAL TEAMS
+    <footer style="border-top:1px solid var(--border-soft);" class="py-8 mt-12 bg-white">
+        <div class="mx-auto max-w-6xl px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="font-display italic text-xl">ProjectMatch.</div>
+            <div style="font-family:'Inter',sans-serif; font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em;">
+                &copy; {% now "Y" %} — The Editorial Standard for Team Formation
+            </div>
         </div>
     </footer>
 
     <!-- ── Global JS ──────────────────────────────────────────── -->
     <script>
     (function() {
-        /* Custom cursor */
-        const dot  = document.getElementById('cursor-dot');
-        const ring = document.getElementById('cursor-ring');
-        if (dot && ring && window.matchMedia('(pointer:fine)').matches) {
-            let mx = -100, my = -100;
-            let rx = -100, ry = -100;
-            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-            function loop() {
-                rx += (mx - rx) * 0.14;
-                ry += (my - ry) * 0.14;
-                dot.style.left  = mx + 'px';
-                dot.style.top   = my + 'px';
-                ring.style.left = rx + 'px';
-                ring.style.top  = ry + 'px';
-                requestAnimationFrame(loop);
-            }
-            loop();
-
-            /* Magnetic buttons */
-            document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
-                btn.addEventListener('mousemove', e => {
-                    const r = btn.getBoundingClientRect();
-                    const cx = r.left + r.width / 2;
-                    const cy = r.top  + r.height / 2;
-                    const dx = (e.clientX - cx) * 0.25;
-                    const dy = (e.clientY - cy) * 0.25;
-                    btn.style.transform = `translate(${dx}px, ${dy}px)`;
-                });
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = '';
-                });
-            });
-        } else {
-            if (dot)  dot.style.display  = 'none';
-            if (ring) ring.style.display = 'none';
-        }
-
-        /* Scroll-reveal for .glass-card elements */
+        /* Gentle fade-in for editorial cards on scroll */
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
@@ -368,13 +277,13 @@
                     io.unobserve(e.target);
                 }
             });
-        }, { threshold: 0.08 });
+        }, { threshold: 0.05 });
 
-        document.querySelectorAll('.glass-card').forEach((card, i) => {
+        document.querySelectorAll('.editorial-card').forEach((card, i) => {
             if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 card.style.opacity = '0';
-                card.style.transform = 'translateY(24px)';
-                card.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
+                card.style.transform = 'translateY(16px)';
+                card.style.transition = `opacity 0.8s ease ${i * 0.1}s, transform 0.8s ease ${i * 0.1}s`;
             }
             io.observe(card);
         });
