@@ -22,7 +22,14 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        login(self.request, self.object)
+        # A user created directly by the form has no backend attached yet.
+        # Select the application's case-insensitive backend explicitly because
+        # multiple authentication backends are configured.
+        login(
+            self.request,
+            self.object,
+            backend="matcher.backends.CaseInsensitiveModelBackend",
+        )
         return redirect(self.get_success_url())
 
 
@@ -69,4 +76,3 @@ def find_matches(request):
             "selected_role": missing_role
         },
     )
-

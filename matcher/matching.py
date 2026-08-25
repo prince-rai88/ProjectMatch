@@ -31,15 +31,18 @@ ROLE_KEYWORDS = {
 
 
 def skill_tags(profile: Profile) -> list[str]:
+    """Return non-empty, display-ready skill tags from a profile."""
     return [tag.strip() for tag in (profile.skills or "").split(",") if tag.strip()]
 
 
 def display_name(profile: Profile) -> str:
+    """Return a profile owner's full name, falling back to their username."""
     name = profile.user.get_full_name().strip()
     return name or profile.user.username
 
 
 def initials(profile: Profile) -> str:
+    """Return up to two uppercase initials for a profile owner's display name."""
     name = display_name(profile)
     parts = [p for p in name.split() if p]
     if len(parts) >= 2:
@@ -48,16 +51,19 @@ def initials(profile: Profile) -> str:
 
 
 def _profile_text(profile: Profile) -> str:
+    """Combine the text fields that form one profile's TF-IDF document."""
     return " ".join(
         part for part in (profile.skills, profile.interests, profile.looking_for) if part
     ).strip()
 
 
 def _word_set(text: str) -> set[str]:
+    """Normalize text into the tokens used by explanation generation."""
     return set(TOKEN_RE.findall((text or "").lower()))
 
 
 def _skill_key_map(tags: list[str]) -> dict[str, str]:
+    """Map lowercased skill names to their original display spelling."""
     mapping = {}
     for tag in tags:
         mapping[tag.lower()] = tag
@@ -65,6 +71,7 @@ def _skill_key_map(tags: list[str]) -> dict[str, str]:
 
 
 def explain_match(target: Profile, other: Profile) -> tuple[str, list[str]]:
+    """Build a human-readable reason and shared skills for a candidate match."""
     target_skills = skill_tags(target)
     other_skills = skill_tags(other)
     target_keys = _skill_key_map(target_skills)
@@ -105,9 +112,73 @@ def explain_match(target: Profile, other: Profile) -> tuple[str, list[str]]:
     return " ".join(parts), shared_skills
 
 
-def find_top_matches(target: Profile, limit: int = TOP_N, missing_role: str = None) -> list[MatchResult]:
+def _gap_alignment(profile: Profile, missing_role: str) -> tuple[float, bool, str]:
+    """Return the existing role-gap boost, flag, and explanation for a profile.
+
+    The checks intentionally preserve the previous skills-first, interests-second,
+    then-looking-for order so role-filter ranking remains unchanged.
+    """
+    role_key = missing_role.strip().lower()
+    keywords = ROLE_KEYWORDS.get(role_key, [])
+    matched_terms: list[str] = []
+
+    for skill in skill_tags(profile):
+        normalized_skill = skill.lower()
+        if any(keyword == normalized_skill or keyword in normalized_skill for keyword in keywords):
+            matched_terms.append(skill)
+
+    if not matched_terms:
+        for interest in (profile.interests or "").split(","):
+            cleaned_interest = interest.strip()
+            if not cleaned_interest:
+                continue
+            normalized_interest = cleaned_interest.lower()
+            if any(keyword == normalized_interest or keyword in normalized_interest for keyword in keywords):
+                matched_terms.append(cleaned_interest)
+
+    if matched_terms:
+        matched_summary = ", ".join(matched_terms[:3])
+        return (
+            0.25,
+            True,
+            f"Fills your {missing_role} gap — strong {matched_summary} background.",
+        )
+
+    if any(keyword in (profile.looking_for or "").lower() for keyword in keywords):
+        return (
+            0.15,
+            True,
+            f"Fills your {missing_role} gap — aligned goals and expectations.",
+        )
+
+    return 0.0, False, ""
+
+
+def find_top_matches(
+    target: Profile,
+    limit: int = TOP_N,
+    missing_role: str | None = None,
+) -> list[MatchResult]:
+    """Rank candidate profiles by TF-IDF cosine similarity and optional role fit.
+
+    One vectorizer is fitted over the complete request corpus, then one cosine
+    similarity operation scores every candidate. The returned results retain the
+    established scoring, boosting, explanation, and ranking behavior.
+    """
     others = list(
-        Profile.objects.exclude(pk=target.pk).select_related("user")
+        Profile.objects.exclude(pk=target.pk)
+        .select_related("user")
+        .only(
+            "id",
+            "skills",
+            "interests",
+            "looking_for",
+            "experience_level",
+            "user__id",
+            "user__username",
+            "user__first_name",
+            "user__last_name",
+        )
     )
     if not others:
         return []
@@ -141,44 +212,9 @@ def find_top_matches(target: Profile, limit: int = TOP_N, missing_role: str = No
         
         explanation, shared = explain_match(target, profile)
         
-        # Check gap alignment
-        is_gap_fit = False
-        boost = 0.0
-        gap_explanation = ""
-        
-        if missing_role:
-            role_key = missing_role.strip().lower()
-            keywords = ROLE_KEYWORDS.get(role_key, [])
-            matched_terms = []
-            
-            # Check skills
-            for s in (profile.skills or "").split(","):
-                s_clean = s.strip()
-                if not s_clean:
-                    continue
-                s_low = s_clean.lower()
-                if any(kw == s_low or kw in s_low for kw in keywords):
-                    matched_terms.append(s_clean)
-            
-            # Check interests
-            if not matched_terms:
-                for i in (profile.interests or "").split(","):
-                    i_clean = i.strip()
-                    if not i_clean:
-                        continue
-                    i_low = i_clean.lower()
-                    if any(kw == i_low or kw in i_low for kw in keywords):
-                        matched_terms.append(i_clean)
-            
-            if matched_terms:
-                is_gap_fit = True
-                boost = 0.25
-                skills_str = ", ".join(matched_terms[:3])
-                gap_explanation = f"Fills your {missing_role} gap — strong {skills_str} background."
-            elif any(kw in (profile.looking_for or "").lower() for kw in keywords):
-                is_gap_fit = True
-                boost = 0.15
-                gap_explanation = f"Fills your {missing_role} gap — aligned goals and expectations."
+        boost, is_gap_fit, gap_explanation = (
+            _gap_alignment(profile, missing_role) if missing_role else (0.0, False, "")
+        )
         
         final_score = float(score) + boost
         final_score_capped = min(final_score, 1.0)
@@ -202,4 +238,3 @@ def find_top_matches(target: Profile, limit: int = TOP_N, missing_role: str = No
         results.sort(key=lambda r: r.score, reverse=True)
         
     return results[:limit]
-

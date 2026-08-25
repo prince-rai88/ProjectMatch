@@ -68,3 +68,24 @@ class GapAwareMatchingTests(TestCase):
         self.assertIn("Fills your Developer gap", matches[0].explanation)
         self.assertIn("Python", matches[0].explanation)
 
+    def test_matching_fetches_candidates_in_one_joined_query(self):
+        """Candidate user data is joined up front, avoiding an N+1 query pattern."""
+        with self.assertNumQueries(1):
+            matches = find_top_matches(self.profile_target)
+            for match in matches:
+                match.profile.user.username
+
+
+class SignUpFlowTests(TestCase):
+    def test_signup_authenticates_with_the_configured_backend(self):
+        response = self.client.post(
+            "/signup/",
+            {
+                "username": "new_member",
+                "password1": "ReliablePass123!",
+                "password2": "ReliablePass123!",
+            },
+        )
+
+        self.assertRedirects(response, "/profile/", fetch_redirect_response=False)
+        self.assertIn("_auth_user_id", self.client.session)

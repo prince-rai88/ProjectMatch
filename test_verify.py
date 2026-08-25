@@ -1,42 +1,38 @@
+"""Manual end-to-end profile and matching smoke test."""
+
 import os
-import django
 import sys
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'projectmatch.settings')
-django.setup()
+import django
 
-from django.contrib.auth.models import User
-from matcher.models import Profile
-from matcher.matching import find_top_matches
 
-def test():
+def main():
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "projectmatch.settings")
+    django.setup()
+    from django.contrib.auth.models import User
+    from matcher.matching import find_top_matches
+    from matcher.models import Profile
+
     try:
-        # Create a test user
-        u, created = User.objects.get_or_create(username='test_user_verify', email='verify@test.com')
-        u.set_password('pass12345678')
-        u.save()
-
-        # Update profile
-        p, created = Profile.objects.get_or_create(user=u)
-        p.skills = 'Python, Django, HTML, CSS'
-        p.interests = 'Testing, AI'
-        p.experience_level = 'intermediate'
-        p.looking_for = 'A designer to help make things look pretty.'
-        p.save()
+        user, _ = User.objects.get_or_create(username="test_user_verify", email="verify@test.com")
+        user.set_password("pass12345678")
+        user.save()
+        profile, _ = Profile.objects.get_or_create(user=user)
+        profile.skills = "Python, Django, HTML, CSS"
+        profile.interests = "Testing, AI"
+        profile.experience_level = "intermediate"
+        profile.looking_for = "A designer to help make things look pretty."
+        profile.save()
         print("✓ Auth & Profile saving works.")
-
-        # Compute matches
-        matches = find_top_matches(p)
-        print(f"✓ Match engine works. Found {len(matches)} matches.")
-        
-        # Test Gap Filter (e.g. Designer)
-        gap_matches = find_top_matches(p, missing_role='Designer')
-        print(f"✓ Gap filter works. Re-ranked for Designer.")
-        
+        print(f"✓ Match engine works. Found {len(find_top_matches(profile))} matches.")
+        find_top_matches(profile, missing_role="Designer")
+        print("✓ Gap filter works. Re-ranked for Designer.")
         print("All functionality verified successfully.")
-    except Exception as e:
-        print(f"Error during verification: {e}")
-        sys.exit(1)
+    except Exception as error:
+        print(f"Error during verification: {error}")
+        return 1
+    return 0
 
-if __name__ == '__main__':
-    test()
+
+if __name__ == "__main__":
+    raise SystemExit(main())
