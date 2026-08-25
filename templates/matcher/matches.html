@@ -7,19 +7,18 @@
 {% block extra_head %}
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   PROJECTMATCH — MATCHES PAGE ANIMATION SYSTEM (dark glass edition)
-   All motion is gated by prefers-reduced-motion at both CSS and JS.
+   PROJECTMATCH — CONNECTIONS PAGE
+   Dark glass system, all original animations preserved + enhanced
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── Layout ─────────────────────────────────────────────────────── */
 .schematic-wrap { position: relative; width: 100%; }
-
 .schematic-row {
     display: flex;
     align-items: center;
     gap: 0;
-    min-height: 128px;
-    margin-bottom: 3rem;
+    min-height: 140px;
+    margin-bottom: 2.5rem;
     position: relative;
 }
 
@@ -28,62 +27,70 @@
     flex-shrink: 0;
     background: var(--glass-fill);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 14px;
-    padding: 1.125rem 1.25rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 1.25rem 1.375rem;
     position: relative;
     z-index: 2;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-    /* [1] ENTRANCE — starts invisible, slightly below */
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
     opacity: 0;
-    transform: translateY(10px);
-    transition:
-        opacity  0.35s ease,
-        transform 0.35s ease,
-        box-shadow 0.2s ease;
-}
-.node-box.node-source { width: 210px; min-width: 210px; }
-.node-box.node-match  { width: 230px; min-width: 230px; }
-.node-box.gap-fit {
-    border-color: rgba(255,138,61,0.35);
-    box-shadow: 0 0 20px rgba(255,138,61,0.12), 0 4px 24px rgba(0,0,0,0.3);
-}
-
-/* Entered state (JS adds this) */
-.node-box.entered {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* [5] HOVER — lift + glow on the hovered match node */
-.node-box.node-match.entered:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(139,92,246,0.2), 0 4px 24px rgba(0,0,0,0.4);
-    border-color: rgba(139,92,246,0.3);
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transform-style: preserve-3d;
     cursor: default;
 }
+.node-box.node-source { width: 215px; min-width: 215px; }
+.node-box.node-match  { width: 235px; min-width: 235px; }
+
+.node-box.gap-fit {
+    border-color: rgba(255,138,61,0.25);
+    box-shadow: 0 0 30px rgba(255,138,61,0.1), 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.node-box.entered { opacity: 1; transform: translateY(0); }
+
+/* 3D tilt on hover — applied by JS */
+.node-box.node-match.entered:hover {
+    border-color: rgba(139,92,246,0.35);
+    box-shadow: 0 16px 50px rgba(139,92,246,0.2), 0 4px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+}
 .node-box.gap-fit.entered:hover {
-    box-shadow: 0 8px 32px rgba(255,138,61,0.2), 0 4px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 16px 50px rgba(255,138,61,0.2), 0 4px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
 /* [5] Dim OTHER rows on hover */
-.schematic-wrap.has-hover .schematic-row { opacity: 0.3; transition: opacity 0.2s ease; }
+.schematic-wrap.has-hover .schematic-row { opacity: 0.25; transition: opacity 0.25s ease; }
 .schematic-wrap.has-hover .schematic-row.row-focused { opacity: 1; }
 
-/* ── Avatar circle ──────────────────────────────────────────────── */
+/* ── Avatar ──────────────────────────────────────────────────────── */
 .node-initials {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
     font-size: 1rem;
-    width: 38px; height: 38px;
+    width: 40px; height: 40px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
     background: linear-gradient(135deg, #8B5CF6, #22D3EE);
     color: #fff;
     flex-shrink: 0;
     letter-spacing: -0.01em;
+    box-shadow: 0 0 20px rgba(139,92,246,0.3);
+    position: relative;
 }
+.node-initials::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(34,211,238,0.4));
+    z-index: -1;
+    animation: avatar-pulse 2.5s ease-in-out infinite;
+}
+@keyframes avatar-pulse {
+    0%,100% { transform: scale(1); opacity: 0.6; }
+    50%      { transform: scale(1.15); opacity: 0.2; }
+}
+
 .node-name {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -101,20 +108,20 @@
 /* ── Gap badge ──────────────────────────────────────────────────── */
 .gap-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-weight: 500;
     letter-spacing: 0.08em;
     color: #fff;
-    background: linear-gradient(90deg, rgba(255,138,61,0.85), rgba(255,138,61,0.65));
-    border: 1px solid rgba(255,138,61,0.4);
+    background: linear-gradient(90deg, rgba(255,138,61,0.9), rgba(255,180,80,0.8));
     padding: 2px 8px;
     border-radius: 4px;
     position: absolute;
-    top: -10px; right: 10px;
+    top: -11px; right: 12px;
     text-transform: uppercase;
+    box-shadow: 0 2px 12px rgba(255,138,61,0.4);
 }
 
-/* ── Connector SVG region ───────────────────────────────────────── */
+/* ── Connector SVG ──────────────────────────────────────────────── */
 .connector-region {
     flex: 1;
     position: relative;
@@ -129,70 +136,58 @@
     height: 64px;
     overflow: visible;
 }
-
-/* [2] LINE DRAW — starts fully offset (invisible) */
 .conn-line {
-    stroke: rgba(255,255,255,0.12);
+    stroke: rgba(255,255,255,0.08);
     stroke-width: 1.5;
     fill: none;
     stroke-dasharray: 2000;
     stroke-dashoffset: 2000;
 }
-/* [3] LOCK-IN — amber + glow */
 .conn-line.locked {
     stroke: var(--accent-amber);
     stroke-dashoffset: 0;
 }
-
-/* [3] GLOW PULSE — one-shot @keyframes */
 @keyframes amber-pulse {
     0%   { filter: drop-shadow(0 0 0px transparent); }
-    40%  { filter: drop-shadow(0 0 8px rgba(255,138,61,0.7)); }
-    100% { filter: drop-shadow(0 0 3px rgba(255,138,61,0.3)); }
+    40%  { filter: drop-shadow(0 0 10px rgba(255,138,61,0.8)); }
+    100% { filter: drop-shadow(0 0 4px rgba(255,138,61,0.35)); }
 }
-.conn-line.pulse {
-    animation: amber-pulse 0.45s ease-out forwards;
-}
-
-/* [5] HOVER — brighten/thicken the focused line */
+.conn-line.pulse { animation: amber-pulse 0.5s ease-out forwards; }
 .schematic-row.row-focused .conn-line.locked {
     stroke-width: 2.5;
-    filter: drop-shadow(0 0 6px rgba(255,138,61,0.6));
+    filter: drop-shadow(0 0 8px rgba(255,138,61,0.7));
 }
-
-/* [4] AMBIENT — traveling dot */
 @keyframes travel-dot {
     0%   { opacity: 0;    stroke-dashoffset: var(--line-len); }
-    6%   { opacity: 0.6; }
-    94%  { opacity: 0.6; }
+    6%   { opacity: 0.7; }
+    94%  { opacity: 0.7; }
     100% { opacity: 0;    stroke-dashoffset: 0; }
 }
 .conn-traveler {
     fill: none;
-    stroke: rgba(255,138,61,0.8);
-    stroke-width: 5;
+    stroke: rgba(255,160,70,0.9);
+    stroke-width: 6;
     stroke-linecap: round;
     opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(255,138,61,0.6));
 }
 .conn-traveler.running {
     opacity: 1;
     animation: travel-dot 3.6s linear infinite;
 }
 
-/* ── Score counter & explanation ────────────────────────────────── */
+/* ── Score label ─────────────────────────────────────────────────── */
 .conn-label {
     position: absolute;
-    top: 0;
-    left: 50%;
+    top: 0; left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
     opacity: 0;
     text-align: center;
     pointer-events: none;
-    transition: opacity 0.28s ease;
+    transition: opacity 0.3s ease;
 }
 .conn-label.visible { opacity: 1; }
-
 .conn-score {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem;
@@ -203,10 +198,10 @@
 }
 .conn-explanation {
     font-family: 'Inter', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.63rem;
     color: var(--text-secondary);
-    max-width: 240px;
-    line-height: 1.4;
+    max-width: 220px;
+    line-height: 1.45;
     display: block;
     text-align: center;
     opacity: 0;
@@ -214,53 +209,39 @@
 }
 .conn-explanation.visible { opacity: 1; }
 
-/* ── Skill pills (dark) ─────────────────────────────────────────── */
+/* ── Skill pills ─────────────────────────────────────────────────── */
 .skill-pill {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--accent-cyan);
-    background: rgba(34,211,238,0.08);
-    border: 1px solid rgba(34,211,238,0.2);
+    background: rgba(34,211,238,0.07);
+    border: 1px solid rgba(34,211,238,0.18);
     padding: 2px 8px;
     border-radius: 4px;
 }
 
-/* ── Mobile: stacked ────────────────────────────────────────────── */
-@media (max-width: 640px) {
-    .schematic-row {
-        flex-direction: column;
-        align-items: stretch;
-        min-height: unset;
-        gap: 0;
-    }
-    .node-box.node-source,
-    .node-box.node-match { width: 100%; min-width: unset; }
-    .connector-region { min-width: unset; width: 100%; min-height: 64px; }
-    .conn-label { top: 6px; }
-}
-
-/* ── Empty state ────────────────────────────────────────────────── */
+/* ── Empty state ─────────────────────────────────────────────────── */
 .empty-connector {
-    stroke: rgba(255,255,255,0.1);
+    stroke: rgba(255,255,255,0.08);
     stroke-width: 1.5;
-    stroke-dasharray: 6 5;
+    stroke-dasharray: 5 5;
     fill: none;
 }
 
-/* ── Gap filter strip ───────────────────────────────────────────── */
+/* ── Gap filter ──────────────────────────────────────────────────── */
 .gap-strip {
     background: var(--glass-fill);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 0.875rem 1.25rem;
+    border-radius: 14px;
+    padding: 1rem 1.375rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
     margin-bottom: 2.5rem;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(16px);
 }
 .gap-strip label {
     font-family: 'Space Grotesk', sans-serif;
@@ -272,42 +253,55 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     border: 1px solid var(--glass-border);
-    background: var(--bg-elevated);
+    background: rgba(255,255,255,0.04);
     color: var(--text-primary);
-    padding: 0.375rem 0.75rem;
+    padding: 0.4rem 0.75rem;
     cursor: pointer;
-    border-radius: 6px;
-    transition: border-color 0.2s;
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 .gap-strip select:focus {
     outline: none;
     border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 2px rgba(34,211,238,0.15);
+    box-shadow: 0 0 0 3px rgba(34,211,238,0.12);
 }
 
-/* ═══════════════════════════════════════════════════════
-   REDUCED MOTION — all end-states, no transitions/anim
-   ═══════════════════════════════════════════════════════ */
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .schematic-row {
+        flex-direction: column;
+        align-items: stretch;
+        min-height: unset;
+        gap: 0;
+    }
+    .node-box.node-source, .node-box.node-match { width: 100%; min-width: unset; }
+    .connector-region { min-width: unset; width: 100%; min-height: 64px; }
+    .conn-label { top: 6px; }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .node-box {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-    }
-    .conn-line {
-        stroke-dashoffset: 0 !important;
-        stroke: var(--accent-amber) !important;
-        stroke-width: 1.5 !important;
-        transition: none !important;
-        animation: none !important;
-        filter: none !important;
-    }
-    .conn-line.pulse { animation: none !important; }
-    .conn-label  { opacity: 1 !important; transition: none !important; }
-    .conn-explanation { opacity: 1 !important; transition: none !important; }
-    .conn-traveler { display: none !important; }
-    .schematic-wrap.has-hover .schematic-row { opacity: 1 !important; transition: none !important; }
-    .node-box.node-match.entered:hover { transform: none !important; }
+    .node-box { opacity:1!important; transform:none!important; transition:none!important; }
+    .conn-line { stroke-dashoffset:0!important; stroke:var(--accent-amber)!important; transition:none!important; animation:none!important; filter:none!important; }
+    .conn-label, .conn-explanation { opacity:1!important; transition:none!important; }
+    .conn-traveler { display:none!important; }
+    .schematic-wrap.has-hover .schematic-row { opacity:1!important; }
+}
+
+/* ── Radar lock animation ────────────────────────────────────────── */
+@keyframes radar-expand {
+    0%   { opacity: 0.8; transform: translate(-50%,-50%) scale(0.3); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(2.2); }
+}
+.radar-ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 60px; height: 60px;
+    border: 1.5px solid var(--accent-amber);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: radar-expand 0.7s ease-out forwards;
+    z-index: 10;
 }
 </style>
 {% endblock %}
@@ -316,11 +310,11 @@
 
 <!-- ── Page header ─────────────────────────────────────────────── -->
 <div class="mb-8">
-    <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Connections</p>
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.875rem;color:var(--text-primary);letter-spacing:-0.02em;">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Connections</p>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.75rem,4vw,2.5rem);color:var(--text-primary);letter-spacing:-0.03em;">
         Your top matches
     </h1>
-    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;">
+    <p style="font-family:'Inter',sans-serif;font-size:0.875rem;color:var(--text-secondary);margin-top:0.375rem;">
         Teammates ranked by skill overlap, shared interests, and project alignment.
     </p>
 </div>
@@ -339,7 +333,7 @@
         <a href="{% url 'find_matches' %}"
            style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent-violet);text-decoration:none;opacity:0.8;transition:opacity 0.15s;"
            onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
-            clear filter ×
+            clear ×
         </a>
         {% endif %}
     </form>
@@ -351,10 +345,9 @@
 <div class="schematic-wrap" id="schemWrap">
 
     {% for match in matches %}
-    <div class="schematic-row" id="row-{{ forloop.counter0 }}"
-         data-row="{{ forloop.counter0 }}">
+    <div class="schematic-row" id="row-{{ forloop.counter0 }}" data-row="{{ forloop.counter0 }}">
 
-        <!-- Source node: visible on first row, hidden (space-occupying) on rest -->
+        <!-- Source node -->
         <div class="node-box node-source{% if not forloop.first %} invisible{% endif %}"
              id="source-node"
              {% if forloop.first %}data-source="1"{% endif %}>
@@ -379,33 +372,24 @@
             <svg class="connector-svg" id="conn-svg-{{ forloop.counter0 }}"
                  viewBox="0 0 300 64" preserveAspectRatio="none"
                  role="presentation" aria-hidden="true">
-                <!-- Main animated line -->
-                <line class="conn-line" id="conn-line-{{ forloop.counter0 }}"
-                      x1="0" y1="32" x2="300" y2="32"/>
-                <!-- Endpoint dots -->
-                <circle id="conn-dot-left-{{ forloop.counter0 }}"
-                        cx="4" cy="32" r="3.5" fill="rgba(255,255,255,0.2)"/>
-                <circle id="conn-dot-right-{{ forloop.counter0 }}"
-                        cx="296" cy="32" r="3.5" fill="var(--accent-amber)" opacity="0"/>
-                <!-- [4] Ambient traveler -->
+                <line class="conn-line" id="conn-line-{{ forloop.counter0 }}" x1="0" y1="32" x2="300" y2="32"/>
+                <circle id="conn-dot-left-{{ forloop.counter0 }}"  cx="4"   cy="32" r="3.5" fill="rgba(255,255,255,0.15)"/>
+                <circle id="conn-dot-right-{{ forloop.counter0 }}" cx="296" cy="32" r="3.5" fill="var(--accent-amber)" opacity="0"/>
                 <line class="conn-traveler" id="conn-traveler-{{ forloop.counter0 }}"
                       x1="0" y1="32" x2="300" y2="32"
                       style="--line-len:300;stroke-dasharray:18 282;stroke-dashoffset:300;"/>
             </svg>
-            <!-- Floating label: score counter + explanation -->
             <div class="conn-label" id="conn-label-{{ forloop.counter0 }}">
-                <span class="conn-score" id="conn-score-{{ forloop.counter0 }}"
-                      data-target="{{ match.score_pct }}">0%</span>
-                <span class="conn-explanation" id="conn-expl-{{ forloop.counter0 }}">
-                    {{ match.explanation|truncatechars:88 }}
-                </span>
+                <span class="conn-score" id="conn-score-{{ forloop.counter0 }}" data-target="{{ match.score_pct }}">0%</span>
+                <span class="conn-explanation" id="conn-expl-{{ forloop.counter0 }}"></span>
             </div>
         </div>
 
         <!-- Match node -->
         <div class="node-box node-match {% if match.is_gap_fit %}gap-fit{% endif %}"
              id="match-node-{{ forloop.counter0 }}"
-             data-idx="{{ forloop.counter0 }}">
+             data-idx="{{ forloop.counter0 }}"
+             data-expl="{{ match.explanation|truncatechars:90|escapejs }}">
             {% if match.is_gap_fit %}
             <div class="gap-badge">fills {{ selected_role|lower }} gap</div>
             {% endif %}
@@ -423,15 +407,15 @@
                 <span style="font-size:0.65rem;color:var(--text-secondary);opacity:0.5;font-family:'Inter',sans-serif;">No skills listed</span>
                 {% endfor %}
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-secondary);opacity:0.35;margin-top:0.625rem;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-secondary);opacity:0.3;margin-top:0.625rem;">
                 {{ match.profile.created_at|timesince }} ago
             </div>
         </div>
 
-    </div><!-- /schematic-row -->
+    </div>
     {% endfor %}
 
-</div><!-- /schematic-wrap -->
+</div>
 
 {% else %}
 
@@ -453,27 +437,24 @@
             {% endfor %}
         </div>
     </div>
-    <!-- Dashed incomplete line -->
     <svg width="260" height="60" viewBox="0 0 260 60" style="display:block;margin-top:-1px;" aria-hidden="true">
         <line x1="0" y1="30" x2="210" y2="30" class="empty-connector"/>
-        <circle cx="5" cy="30" r="3" fill="rgba(255,255,255,0.1)"/>
-        <circle cx="210" cy="30" r="3" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+        <circle cx="5" cy="30" r="3" fill="rgba(255,255,255,0.08)"/>
+        <circle cx="210" cy="30" r="3" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
     </svg>
-    <p style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--text-primary);margin-top:1rem;">
-        No connections yet
-    </p>
-    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;line-height:1.6;">
+    <p style="font-family:'Space Grotesk',sans-serif;font-size:1.0625rem;font-weight:700;color:var(--text-primary);margin-top:1rem;">No connections yet</p>
+    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;line-height:1.65;">
         {% if selected_role %}
-            No profiles fill the <strong style="color:var(--text-primary);">{{ selected_role }}</strong> gap right now. Try a different role or broaden your profile.
+            No profiles fill the <strong style="color:var(--text-primary);">{{ selected_role }}</strong> gap right now.
         {% else %}
-            Add skills and interests to your profile — we need at least one other teammate with overlapping expertise to draw your first connection.
+            Add skills and interests to your profile to find your first connection.
         {% endif %}
     </p>
     <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
         {% if selected_role %}
         <a href="{% url 'find_matches' %}" class="btn-secondary text-sm px-4 py-2 rounded-xl inline-block">Clear filter</a>
         {% endif %}
-        <a href="{% url 'profile_edit' %}" class="btn-primary text-sm px-4 py-2 rounded-xl inline-block">Edit profile</a>
+        <a href="{% url 'profile_edit' %}" class="btn-primary text-sm px-4 py-2 rounded-xl inline-block"><span>Edit profile</span></a>
     </div>
 </div>
 
@@ -481,50 +462,63 @@
 
 {% if matches %}
 <script>
-/* ═══════════════════════════════════════════════════════════════════
-   PROJECTMATCH — ANIMATION ORCHESTRATOR (unchanged logic)
-   Layers: entrance → line draw → lock-in + pulse → counter → ambient
-   All gated by prefers-reduced-motion.
-   ═══════════════════════════════════════════════════════════════════ */
 (function () {
     'use strict';
-
     const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const MOBILE  = () => window.innerWidth < 640;
     const TOTAL   = {{ matches|length }};
 
-    /* ── Timing constants (ms) ──────────────────────────────────── */
     const T = {
-        sourceEnter : 150,
-        matchBase   : 320,
-        matchStagger: 180,
-        nodeEnterDur: 350,
-        lineDelay   : 80,
-        lineDur     : 600,
-        lockDelay   : 50,
-        counterDur  : 520,
-        explDelay   : 120,
-        ambientDelay: 400,
+        sourceEnter : 100,
+        matchBase   : 280,
+        matchStagger: 160,
+        nodeEnterDur: 400,
+        lineDelay   : 60,
+        lineDur     : 550,
+        lockDelay   : 40,
+        counterDur  : 600,
+        explDelay   : 100,
+        ambientDelay: 350,
     };
 
     function el(id) { return document.getElementById(id); }
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    /* Typewriter effect for explanation */
+    function typewrite(element, text, dur) {
+        return new Promise(resolve => {
+            if (REDUCED || !text) { element.textContent = text; resolve(); return; }
+            let i = 0;
+            const interval = dur / text.length;
+            element.textContent = '';
+            const timer = setInterval(() => {
+                element.textContent += text[i] || '';
+                i++;
+                if (i >= text.length) { clearInterval(timer); resolve(); }
+            }, Math.max(interval, 12));
+        });
+    }
+
+    /* Radar lock ring burst */
+    function radarLock(matchNode) {
+        if (REDUCED) return;
+        const ring = document.createElement('div');
+        ring.className = 'radar-ring';
+        matchNode.style.position = 'relative';
+        matchNode.appendChild(ring);
+        ring.addEventListener('animationend', () => ring.remove());
+    }
 
     function countUp(element, target, dur) {
         return new Promise(resolve => {
             if (REDUCED) { element.textContent = target + '%'; resolve(); return; }
             const start = performance.now();
             function tick(now) {
-                const elapsed = now - start;
-                const progress = Math.min(elapsed / dur, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                element.textContent = Math.round(eased * target) + '%';
-                if (progress < 1) {
-                    requestAnimationFrame(tick);
-                } else {
-                    element.textContent = target + '%';
-                    resolve();
-                }
+                const p = Math.min((now - start) / dur, 1);
+                const e = 1 - Math.pow(1 - p, 3);
+                element.textContent = Math.round(e * target) + '%';
+                if (p < 1) requestAnimationFrame(tick);
+                else { element.textContent = target + '%'; resolve(); }
             }
             requestAnimationFrame(tick);
         });
@@ -559,7 +553,7 @@
                 lineEl.classList.add('pulse');
                 lineEl.addEventListener('animationend', () => lineEl.classList.remove('pulse'), { once: true });
             }
-            setTimeout(resolve, 220);
+            setTimeout(resolve, 250);
         });
     }
 
@@ -575,51 +569,72 @@
 
     function configureMobileSVG(idx) {
         if (!MOBILE()) return;
-        const line     = el('conn-line-'       + idx);
-        const dotLeft  = el('conn-dot-left-'   + idx);
-        const dotRight = el('conn-dot-right-'  + idx);
-        const traveler = el('conn-traveler-'   + idx);
-        if (line)     { line.setAttribute('x1','150'); line.setAttribute('y1','2');  line.setAttribute('x2','150'); line.setAttribute('y2','62'); }
-        if (dotLeft)  { dotLeft.setAttribute('cx','150');  dotLeft.setAttribute('cy','5'); }
-        if (dotRight) { dotRight.setAttribute('cx','150'); dotRight.setAttribute('cy','59'); }
-        if (traveler) { traveler.setAttribute('x1','150'); traveler.setAttribute('y1','2');  traveler.setAttribute('x2','150'); traveler.setAttribute('y2','62'); }
+        ['conn-line-', 'conn-dot-left-', 'conn-dot-right-', 'conn-traveler-'].forEach((pfx, pi) => {
+            const e = el(pfx + idx);
+            if (!e) return;
+            if (pi === 0 || pi === 3) {
+                e.setAttribute('x1','150'); e.setAttribute('y1','2');
+                e.setAttribute('x2','150'); e.setAttribute('y2','62');
+            } else if (pi === 1) { e.setAttribute('cx','150'); e.setAttribute('cy','5'); }
+            else { e.setAttribute('cx','150'); e.setAttribute('cy','59'); }
+        });
+    }
+
+    /* 3D tilt card effect */
+    function setup3DTilt(node) {
+        if (REDUCED || MOBILE()) return;
+        node.addEventListener('mousemove', e => {
+            const r = node.getBoundingClientRect();
+            const cx = r.left + r.width / 2;
+            const cy = r.top  + r.height / 2;
+            const dx = (e.clientX - cx) / (r.width / 2);
+            const dy = (e.clientY - cy) / (r.height / 2);
+            node.style.transform = `perspective(800px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) scale(1.02)`;
+        });
+        node.addEventListener('mouseleave', () => {
+            node.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)';
+            node.style.transition = 'transform 0.5s ease, border-color 0.3s ease, box-shadow 0.3s ease';
+        });
+        node.addEventListener('mouseenter', () => {
+            node.style.transition = 'border-color 0.3s ease, box-shadow 0.3s ease';
+        });
     }
 
     async function animateConnection(idx, startAfterMs) {
         await delay(startAfterMs);
 
-        const matchNode  = el('match-node-'       + idx);
-        const lineEl     = el('conn-line-'         + idx);
-        const dotRight   = el('conn-dot-right-'    + idx);
-        const labelEl    = el('conn-label-'        + idx);
-        const scoreEl    = el('conn-score-'        + idx);
-        const explEl     = el('conn-expl-'         + idx);
-        const travelerEl = el('conn-traveler-'     + idx);
+        const matchNode  = el('match-node-'    + idx);
+        const lineEl     = el('conn-line-'     + idx);
+        const dotRight   = el('conn-dot-right-'+ idx);
+        const labelEl    = el('conn-label-'    + idx);
+        const scoreEl    = el('conn-score-'    + idx);
+        const explEl     = el('conn-expl-'     + idx);
+        const travelerEl = el('conn-traveler-' + idx);
 
         if (!matchNode || !lineEl) return;
         configureMobileSVG(idx);
+        setup3DTilt(matchNode);
 
-        /* [1] MATCH NODE ENTRANCE */
         matchNode.classList.add('entered');
         await delay(T.nodeEnterDur + T.lineDelay);
 
-        /* [2] LINE DRAW */
         await drawLine(lineEl, T.lineDur);
         await delay(T.lockDelay);
 
-        /* [3a] LOCK-IN */
+        radarLock(matchNode);
         await lockIn(lineEl, dotRight);
 
-        /* [3b] SCORE COUNTER */
         const target = parseInt(scoreEl ? scoreEl.dataset.target : '0', 10) || 0;
         labelEl.classList.add('visible');
         await countUp(scoreEl, target, T.counterDur);
 
-        /* [3c] EXPLANATION FADE-IN */
         await delay(T.explDelay);
-        if (explEl) explEl.classList.add('visible');
+        if (explEl) {
+            const explText = matchNode.dataset.expl || '';
+            await typewrite(explEl, explText, 1200);
+            explEl.classList.add('visible');
+        }
 
-        /* [4] AMBIENT TRAVELER */
         await delay(T.ambientDelay);
         let lineLen = 300;
         try { lineLen = lineEl.getTotalLength ? lineEl.getTotalLength() : 300; } catch(e) {}
@@ -629,33 +644,28 @@
     function skipToEndState() {
         const srcNode = document.querySelector('[data-source="1"]');
         if (srcNode) srcNode.classList.add('entered');
-
         for (let i = 0; i < TOTAL; i++) {
             const matchNode = el('match-node-' + i);
             const lineEl    = el('conn-line-'  + i);
             const dotRight  = el('conn-dot-right-' + i);
-            const labelEl   = el('conn-label-'  + i);
-            const scoreEl   = el('conn-score-'  + i);
-            const explEl    = el('conn-expl-'   + i);
-
-            if (matchNode) matchNode.classList.add('entered');
+            const labelEl   = el('conn-label-' + i);
+            const scoreEl   = el('conn-score-' + i);
+            const explEl    = el('conn-expl-'  + i);
+            if (matchNode) { matchNode.classList.add('entered'); setup3DTilt(matchNode); }
             if (lineEl)    { lineEl.style.strokeDashoffset = '0'; lineEl.classList.add('locked'); }
             if (dotRight)  { dotRight.style.fill = 'var(--accent-amber)'; dotRight.style.opacity = '1'; }
             if (labelEl)   labelEl.classList.add('visible');
             if (scoreEl)   scoreEl.textContent = (scoreEl.dataset.target || '0') + '%';
-            if (explEl)    explEl.classList.add('visible');
+            if (explEl)    { explEl.textContent = matchNode ? matchNode.dataset.expl : ''; explEl.classList.add('visible'); }
         }
     }
 
     function setupHover() {
         const wrap = document.getElementById('schemWrap');
         if (!wrap) return;
-
-        const rows = wrap.querySelectorAll('.schematic-row');
-        rows.forEach(row => {
+        wrap.querySelectorAll('.schematic-row').forEach(row => {
             const matchNode = row.querySelector('.node-box.node-match');
             if (!matchNode) return;
-
             matchNode.addEventListener('mouseenter', () => {
                 if (REDUCED) return;
                 wrap.classList.add('has-hover');
@@ -668,27 +678,18 @@
         });
     }
 
-    /* ── BOOT ───────────────────────────────────────────────────── */
-    if (REDUCED) {
-        skipToEndState();
-        setupHover();
-        return;
-    }
+    if (REDUCED) { skipToEndState(); setupHover(); return; }
 
     async function run() {
         await delay(T.sourceEnter);
         const srcNode = document.querySelector('[data-source="1"]');
-        if (srcNode) srcNode.classList.add('entered');
-
+        if (srcNode) { srcNode.classList.add('entered'); setup3DTilt(srcNode); }
         for (let i = 0; i < TOTAL; i++) {
-            const startMs = T.matchBase + i * T.matchStagger;
-            animateConnection(i, startMs);
+            animateConnection(i, T.matchBase + i * T.matchStagger);
         }
     }
-
     run();
     setupHover();
-
 })();
 </script>
 {% endif %}

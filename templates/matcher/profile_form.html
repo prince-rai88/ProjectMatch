@@ -11,144 +11,124 @@
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--accent-cyan);
-    background: rgba(34,211,238,0.08);
-    border: 1px solid rgba(34,211,238,0.22);
-    padding: 3px 8px 3px 10px;
-    border-radius: 4px;
+    background: rgba(34,211,238,0.07);
+    border: 1px solid rgba(34,211,238,0.2);
+    padding: 4px 8px 4px 10px;
+    border-radius: 5px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    animation: pill-in 0.2s ease;
+    animation: pill-pop 0.25s cubic-bezier(0.16,1,0.3,1);
 }
-@keyframes pill-in {
-    from { opacity: 0; transform: scale(0.85); }
-    to   { opacity: 1; transform: scale(1); }
+@keyframes pill-pop {
+    from { opacity:0; transform:scale(0.7) translateY(4px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
 }
 .tag-pill-editable button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    color: var(--text-secondary);
-    opacity: 0.6;
-    font-size: 0.85rem;
-    font-family: 'Inter', sans-serif;
-    transition: opacity 0.15s;
+    background: none; border: none; cursor: pointer; padding: 0;
+    line-height: 1; color: var(--text-secondary); opacity: 0.55;
+    font-size: 0.9rem; transition: opacity 0.15s, color 0.15s;
 }
 .tag-pill-editable button:hover { opacity: 1; color: #f87171; }
 
 /* ── Tag input area ─────────────────────────────────────────── */
 .tag-input-area {
-    background: var(--bg-elevated);
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 0.5rem 0.625rem;
-    min-height: 52px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-    align-items: center;
-    cursor: text;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 54px;
+    display: flex; flex-wrap: wrap; gap: 0.375rem;
+    align-items: center; cursor: text;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 .tag-input-area:focus-within {
     border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 3px rgba(34,211,238,0.12);
+    box-shadow: 0 0 0 4px rgba(34,211,238,0.1);
 }
 .tag-input-area input {
-    border: none;
-    background: transparent;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--text-primary);
-    outline: none;
-    min-width: 160px;
-    flex: 1;
+    border: none; background: transparent;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    color: var(--text-primary); outline: none; min-width: 160px; flex: 1;
 }
 .tag-input-area input::placeholder {
-    color: var(--text-secondary);
-    opacity: 0.5;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
+    color: var(--text-secondary); opacity: 0.4;
+    font-family: 'Inter', sans-serif; font-size: 0.75rem;
 }
 
 /* ── Section cards ──────────────────────────────────────────── */
-.profile-section {
-    padding: 2rem;
-    margin-bottom: 1.25rem;
-}
+.profile-section { padding: 2rem 2.25rem; margin-bottom: 1.25rem; }
 .section-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-cyan);
-    margin-bottom: 0.375rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+    font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-cyan); margin-bottom: 0.375rem;
 }
 .section-heading {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text-primary);
-    letter-spacing: -0.01em;
-    margin-bottom: 0.25rem;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 1.0625rem; color: var(--text-primary);
+    letter-spacing: -0.01em; margin-bottom: 0.25rem;
 }
 .section-subtext {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-}
-.section-rule {
-    border: none;
-    border-top: 1px solid var(--glass-border);
-    margin: 1.25rem 0;
+    font-family: 'Inter', sans-serif; font-size: 0.8rem;
+    color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.55;
 }
 .form-label {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 0.8125rem;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 0.4rem;
+    font-family: 'Inter', sans-serif; font-weight: 500;
+    font-size: 0.8125rem; color: var(--text-secondary);
+    display: block; margin-bottom: 0.4rem;
 }
 
-/* ── Loading overlay ─────────────────────────────────────────── */
+/* ── Terminal loading overlay ───────────────────────────────── */
 .loading-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: rgba(10,14,23,0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(5,8,16,0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: center;
 }
-.loading-card {
-    background: var(--glass-fill);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    padding: 2.25rem 2.5rem;
-    text-align: center;
-    max-width: 340px;
-    width: 90%;
+.terminal-card {
+    background: #0d1117;
+    border: 1px solid rgba(139,92,246,0.25);
+    border-radius: 14px;
+    box-shadow: 0 0 60px rgba(139,92,246,0.15), 0 8px 40px rgba(0,0,0,0.6);
+    padding: 0; overflow: hidden;
+    max-width: 460px; width: 90%;
 }
-.spinner-ring {
-    width: 44px; height: 44px;
-    border: 2.5px solid rgba(139,92,246,0.15);
-    border-top-color: var(--accent-violet);
-    border-right-color: var(--accent-cyan);
-    border-radius: 50%;
-    animation: spin 0.75s linear infinite;
-    margin: 0 auto 1.25rem;
+.terminal-header {
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0.625rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.terminal-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    color: var(--text-secondary); margin-left: 0.375rem; opacity: 0.6;
+}
+.terminal-body {
+    padding: 1.25rem 1.375rem; min-height: 160px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    line-height: 1.7; color: var(--text-secondary);
+}
+.t-line { display: block; animation: t-appear 0.05s ease both; }
+@keyframes t-appear { from{opacity:0} to{opacity:1} }
+.t-cyan   { color: var(--accent-cyan); }
+.t-violet { color: var(--accent-violet); }
+.t-amber  { color: var(--accent-amber); }
+.t-green  { color: #4ade80; }
+.t-dim    { opacity: 0.4; }
+.t-cursor {
+    display: inline-block; width: 7px; height: 13px;
+    background: var(--accent-violet); vertical-align: text-bottom;
+    animation: blink-cursor 0.9s step-end infinite;
+}
+@keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
 @media (prefers-reduced-motion: reduce) {
-    .spinner-ring { animation: none; border-top-color: var(--accent-violet); }
+    .spinner-ring { animation: none; }
+    .t-cursor { animation: none; }
 }
 </style>
 {% endblock %}
@@ -156,78 +136,80 @@
 {% block content %}
 <div x-data="{ pageLoading: false }">
 
-    <!-- Loading overlay -->
+    <!-- Terminal loading overlay -->
     <div x-show="pageLoading" x-cloak class="loading-overlay"
-         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter="transition ease-out duration-250"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100">
-        <div class="loading-card">
-            <div class="spinner-ring"></div>
-            <p class="section-heading" style="margin-bottom:0.375rem;">Mapping connections...</p>
-            <p style="font-size:0.8rem;color:var(--text-secondary);font-family:'Inter',sans-serif;line-height:1.5;">
-                Running TF-IDF analysis across all profiles.
-            </p>
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+                <span class="terminal-title">projectmatch — matching engine</span>
+            </div>
+            <div class="terminal-body" id="terminalBody">
+                <span class="t-line t-dim">$ python manage.py find_matches</span>
+                <span id="t-out"></span>
+                <span class="t-cursor" id="t-cursor"></span>
+            </div>
         </div>
     </div>
 
     <!-- Page header -->
     <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1rem;padding-bottom:1.5rem;border-bottom:1px solid var(--glass-border);margin-bottom:2rem;">
         <div>
-            <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Your Profile</p>
-            <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.875rem;color:var(--text-primary);letter-spacing:-0.02em;line-height:1.1;">
-                Build your identity
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Your Profile</p>
+            <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.75rem,4vw,2.25rem);color:var(--text-primary);letter-spacing:-0.03em;line-height:1.1;">
+                Build your signal
             </h1>
-            <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;">
+            <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;line-height:1.5;">
                 Tell potential teammates what you bring and what you're looking for.
             </p>
         </div>
-        <a href="{% url 'find_matches' %}" @click="pageLoading = true"
+        <a href="{% url 'find_matches' %}"
+           @click="pageLoading = true; startTerminal();"
            class="btn-primary rounded-xl px-5 py-2.5 text-sm inline-flex items-center gap-2"
-           style="align-self:flex-start; margin-top:0.5rem;">
+           style="align-self:flex-start;margin-top:0.5rem;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-            Find Matches
+            <span>Find Matches</span>
         </a>
     </div>
 
     <!-- Form -->
-    <form method="post" style="max-width:640px;">
+    <form method="post" style="max-width:660px;">
         {% csrf_token %}
-
-        <!-- Hidden backing fields -->
         {{ form.skills }}
         {{ form.interests }}
 
-        <!-- ── Section 1: About You ───────────────────────────── -->
+        <!-- Section 1 -->
         <div class="profile-section glass-card">
             <p class="section-eyebrow">01 · About You</p>
             <div class="section-heading">Skills & Interests</div>
             <p class="section-subtext">Your skills and interests shape which teammates you connect with.</p>
 
-            <!-- Skills tag input -->
-            <div style="margin-bottom:1.25rem;">
+            <div style="margin-bottom:1.375rem;">
                 <label class="form-label">Skills</label>
                 <div x-data="tagInput({ hiddenId: '{{ form.skills.auto_id }}', initialValue: '{{ form.skills.value|default_if_none:""|escapejs }}' })">
                     <div class="tag-input-area" @click="$refs.tagEntry.focus()">
                         <template x-for="(tag, i) in tags" :key="i">
                             <span class="tag-pill-editable">
                                 <span x-text="tag"></span>
-                                <button type="button" @click.stop="removeTag(i)" aria-label="Remove tag">&times;</button>
+                                <button type="button" @click.stop="removeTag(i)" aria-label="Remove">&times;</button>
                             </span>
                         </template>
-                        <input x-ref="tagEntry"
-                               x-model="inputValue"
+                        <input x-ref="tagEntry" x-model="inputValue"
                                @keydown.enter.prevent="addTag()"
                                @keydown.backspace="inputValue === '' && removeTag(tags.length - 1)"
                                placeholder="e.g. Python, Figma, Django — press Enter"
                                autocomplete="off">
                     </div>
-                    <p style="font-family:'Inter',sans-serif;font-size:0.7rem;color:var(--text-secondary);opacity:0.5;margin-top:0.375rem;">Press Enter after each skill. Click × to remove.</p>
+                    <p style="font-size:0.68rem;color:var(--text-secondary);opacity:0.45;margin-top:0.375rem;font-family:'Inter',sans-serif;">Press Enter after each skill. Click × to remove.</p>
                 </div>
             </div>
 
-            <!-- Interests tag input -->
             <div>
                 <label class="form-label">Interests</label>
                 <div x-data="tagInput({ hiddenId: '{{ form.interests.auto_id }}', initialValue: '{{ form.interests.value|default_if_none:""|escapejs }}' })">
@@ -235,92 +217,74 @@
                         <template x-for="(tag, i) in tags" :key="i">
                             <span class="tag-pill-editable">
                                 <span x-text="tag"></span>
-                                <button type="button" @click.stop="removeTag(i)" aria-label="Remove tag">&times;</button>
+                                <button type="button" @click.stop="removeTag(i)" aria-label="Remove">&times;</button>
                             </span>
                         </template>
-                        <input x-ref="tagEntry2"
-                               x-model="inputValue"
+                        <input x-ref="tagEntry2" x-model="inputValue"
                                @keydown.enter.prevent="addTag()"
                                @keydown.backspace="inputValue === '' && removeTag(tags.length - 1)"
                                placeholder="e.g. AI, ClimateTech, Fintech — press Enter"
                                autocomplete="off">
                     </div>
-                    <p style="font-family:'Inter',sans-serif;font-size:0.7rem;color:var(--text-secondary);opacity:0.5;margin-top:0.375rem;">Press Enter after each interest. Click × to remove.</p>
+                    <p style="font-size:0.68rem;color:var(--text-secondary);opacity:0.45;margin-top:0.375rem;font-family:'Inter',sans-serif;">Press Enter after each interest. Click × to remove.</p>
                 </div>
             </div>
         </div>
 
-        <!-- ── Section 2: Availability & Experience ────────────── -->
+        <!-- Section 2 -->
         <div class="profile-section glass-card">
             <p class="section-eyebrow">02 · Workstyle</p>
             <div class="section-heading">Availability & Experience</div>
             <p class="section-subtext">Helps surface teammates whose working styles align with yours.</p>
-
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                 <div>
                     <label class="form-label" for="{{ form.availability.id_for_label }}">{{ form.availability.label }}</label>
                     {{ form.availability }}
-                    {% for error in form.availability.errors %}
-                        <p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ error }}</p>
-                    {% endfor %}
+                    {% for e in form.availability.errors %}<p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ e }}</p>{% endfor %}
                 </div>
                 <div>
                     <label class="form-label" for="{{ form.experience_level.id_for_label }}">{{ form.experience_level.label }}</label>
                     {{ form.experience_level }}
-                    {% for error in form.experience_level.errors %}
-                        <p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ error }}</p>
-                    {% endfor %}
+                    {% for e in form.experience_level.errors %}<p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ e }}</p>{% endfor %}
                 </div>
             </div>
         </div>
 
-        <!-- ── Section 3: What You're Looking For ──────────────── -->
+        <!-- Section 3 -->
         <div class="profile-section glass-card">
             <p class="section-eyebrow">03 · Intent</p>
             <div class="section-heading">What You're Looking For</div>
             <p class="section-subtext">Describe the role, project type, or teammate qualities you need. This text is used directly by the matching engine.</p>
-
-            <div>
-                {{ form.looking_for }}
-                {% for error in form.looking_for.errors %}
-                    <p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ error }}</p>
-                {% endfor %}
-            </div>
+            {{ form.looking_for }}
+            {% for e in form.looking_for.errors %}<p style="font-size:0.7rem;color:#f87171;margin-top:0.25rem;">{{ e }}</p>{% endfor %}
         </div>
 
-        <button type="submit" class="btn-primary rounded-xl px-6 py-3 text-sm w-full sm:w-auto" style="margin-top:0.5rem;">
-            Save profile
+        <button type="submit" class="btn-primary rounded-xl px-7 py-3 text-sm w-full sm:w-auto" style="margin-top:0.5rem;">
+            <span>Save profile</span>
         </button>
     </form>
 
 </div>
 
 <script>
+/* Tag input Alpine component */
 document.addEventListener('alpine:init', () => {
     Alpine.data('tagInput', (config) => ({
         hiddenId: config.hiddenId,
-        tags: config.initialValue
-            ? config.initialValue.split(',').map(t => t.trim()).filter(t => t.length > 0)
-            : [],
+        tags: config.initialValue ? config.initialValue.split(',').map(t => t.trim()).filter(t => t.length > 0) : [],
         inputValue: '',
-
         addTag() {
             const val = this.inputValue.trim();
             if (val) {
                 val.split(',').map(t => t.trim()).filter(t => t.length > 0).forEach(part => {
-                    if (!this.tags.find(t => t.toLowerCase() === part.toLowerCase())) {
-                        this.tags.push(part);
-                    }
+                    if (!this.tags.find(t => t.toLowerCase() === part.toLowerCase())) this.tags.push(part);
                 });
                 this.sync();
             }
             this.inputValue = '';
         },
         removeTag(i) {
-            if (i >= 0 && i < this.tags.length) {
-                this.tags.splice(i, 1);
-                this.sync();
-            }
+            if (i >= 0 && i < this.tags.length) { this.tags.splice(i, 1); this.sync(); }
         },
         sync() {
             const el = document.getElementById(this.hiddenId);
@@ -328,5 +292,32 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 });
+
+/* Terminal loading animation */
+function startTerminal() {
+    const out = document.getElementById('t-out');
+    const cursor = document.getElementById('t-cursor');
+    if (!out) return;
+
+    const lines = [
+        { text: '› Loading profiles from DB...', cls: 't-dim', delay: 100 },
+        { text: '› Building TF-IDF matrix...', cls: 't-cyan', delay: 600 },
+        { text: '  ✓ Vectorized 12 profiles', cls: 't-green', delay: 1100 },
+        { text: '› Computing cosine similarity...', cls: 't-cyan', delay: 1400 },
+        { text: '  ✓ Scored 11 candidates', cls: 't-green', delay: 2000 },
+        { text: '› Applying gap-aware re-ranking...', cls: 't-violet', delay: 2300 },
+        { text: '  ✓ Matches ranked and ready', cls: 't-green', delay: 2900 },
+        { text: '› Rendering connections...', cls: 't-amber', delay: 3200 },
+    ];
+
+    lines.forEach(({ text, cls, delay }) => {
+        setTimeout(() => {
+            const span = document.createElement('span');
+            span.className = 't-line ' + cls;
+            span.textContent = text;
+            out.appendChild(span);
+        }, delay);
+    });
+}
 </script>
 {% endblock %}
