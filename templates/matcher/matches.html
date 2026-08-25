@@ -7,7 +7,7 @@
 {% block extra_head %}
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   PROJECTMATCH — MATCHES PAGE ANIMATION SYSTEM
+   PROJECTMATCH — MATCHES PAGE ANIMATION SYSTEM (dark glass edition)
    All motion is gated by prefers-reduced-motion at both CSS and JS.
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -26,26 +26,28 @@
 /* ── Node boxes ─────────────────────────────────────────────────── */
 .node-box {
     flex-shrink: 0;
-    border: 1.5px solid var(--slate);
-    background: var(--paper);
-    padding: 1rem 1.125rem;
+    background: var(--glass-fill);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 14px;
+    padding: 1.125rem 1.25rem;
     position: relative;
     z-index: 2;
-    box-shadow: 3px 3px 0 var(--slate);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     /* [1] ENTRANCE — starts invisible, slightly below */
     opacity: 0;
     transform: translateY(10px);
-    /* transition drives the entrance */
     transition:
         opacity  0.35s ease,
         transform 0.35s ease,
         box-shadow 0.2s ease;
 }
-.node-box.node-source { width: 200px; min-width: 200px; }
-.node-box.node-match  { width: 220px; min-width: 220px; }
+.node-box.node-source { width: 210px; min-width: 210px; }
+.node-box.node-match  { width: 230px; min-width: 230px; }
 .node-box.gap-fit {
-    border-color: var(--signal-amber);
-    box-shadow: 3px 3px 0 var(--signal-amber);
+    border-color: rgba(255,138,61,0.35);
+    box-shadow: 0 0 20px rgba(255,138,61,0.12), 0 4px 24px rgba(0,0,0,0.3);
 }
 
 /* Entered state (JS adds this) */
@@ -54,42 +56,45 @@
     transform: translateY(0);
 }
 
-/* [5] HOVER — lift + shadow on the hovered match node */
+/* [5] HOVER — lift + glow on the hovered match node */
 .node-box.node-match.entered:hover {
-    transform: translateY(-3px);
-    box-shadow: 4px 6px 0 var(--slate);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(139,92,246,0.2), 0 4px 24px rgba(0,0,0,0.4);
+    border-color: rgba(139,92,246,0.3);
     cursor: default;
 }
 .node-box.gap-fit.entered:hover {
-    box-shadow: 4px 6px 0 var(--signal-amber);
+    box-shadow: 0 8px 32px rgba(255,138,61,0.2), 0 4px 24px rgba(0,0,0,0.4);
 }
 
 /* [5] Dim OTHER rows on hover */
-.schematic-wrap.has-hover .schematic-row { opacity: 0.38; transition: opacity 0.2s ease; }
+.schematic-wrap.has-hover .schematic-row { opacity: 0.3; transition: opacity 0.2s ease; }
 .schematic-wrap.has-hover .schematic-row.row-focused { opacity: 1; }
 
+/* ── Avatar circle ──────────────────────────────────────────────── */
 .node-initials {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 1.1rem;
-    width: 36px; height: 36px;
+    font-size: 1rem;
+    width: 38px; height: 38px;
     display: flex; align-items: center; justify-content: center;
-    border: 1.5px solid currentColor;
-    color: var(--slate);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8B5CF6, #22D3EE);
+    color: #fff;
     flex-shrink: 0;
+    letter-spacing: -0.01em;
 }
 .node-name {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
     font-size: 0.875rem;
-    color: var(--ink-navy);
+    color: var(--text-primary);
     line-height: 1.2;
 }
 .node-meta {
     font-family: 'Inter', sans-serif;
     font-size: 0.7rem;
-    color: var(--slate);
-    opacity: 0.7;
+    color: var(--text-secondary);
     margin-top: 2px;
 }
 
@@ -99,11 +104,13 @@
     font-size: 0.6rem;
     font-weight: 500;
     letter-spacing: 0.08em;
-    color: var(--ink-navy);
-    background: var(--signal-amber);
-    padding: 1px 6px;
+    color: #fff;
+    background: linear-gradient(90deg, rgba(255,138,61,0.85), rgba(255,138,61,0.65));
+    border: 1px solid rgba(255,138,61,0.4);
+    padding: 2px 8px;
+    border-radius: 4px;
     position: absolute;
-    top: -10px; right: 8px;
+    top: -10px; right: 10px;
     text-transform: uppercase;
 }
 
@@ -125,24 +132,23 @@
 
 /* [2] LINE DRAW — starts fully offset (invisible) */
 .conn-line {
-    stroke: var(--slate);
+    stroke: rgba(255,255,255,0.12);
     stroke-width: 1.5;
     fill: none;
-    /* dasharray set by JS to exact length */
     stroke-dasharray: 2000;
     stroke-dashoffset: 2000;
 }
 /* [3] LOCK-IN — amber + glow */
 .conn-line.locked {
-    stroke: var(--signal-amber);
+    stroke: var(--accent-amber);
     stroke-dashoffset: 0;
 }
 
-/* [3] GLOW PULSE — one-shot @keyframes, applied by JS after lock-in */
+/* [3] GLOW PULSE — one-shot @keyframes */
 @keyframes amber-pulse {
     0%   { filter: drop-shadow(0 0 0px transparent); }
-    40%  { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--signal-amber) 70%, transparent)); }
-    100% { filter: drop-shadow(0 0 2px color-mix(in srgb, var(--signal-amber) 30%, transparent)); }
+    40%  { filter: drop-shadow(0 0 8px rgba(255,138,61,0.7)); }
+    100% { filter: drop-shadow(0 0 3px rgba(255,138,61,0.3)); }
 }
 .conn-line.pulse {
     animation: amber-pulse 0.45s ease-out forwards;
@@ -151,34 +157,19 @@
 /* [5] HOVER — brighten/thicken the focused line */
 .schematic-row.row-focused .conn-line.locked {
     stroke-width: 2.5;
-    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--signal-amber) 60%, transparent));
+    filter: drop-shadow(0 0 6px rgba(255,138,61,0.6));
 }
 
-/* [4] AMBIENT — traveling dot along locked lines (SVG <circle> driven by CSS animation) */
-@keyframes travel-h {
-    0%   { offset-distance: 0%; opacity: 0; }
-    8%   { opacity: 0.55; }
-    92%  { opacity: 0.55; }
-    100% { offset-distance: 100%; opacity: 0; }
-}
-.traveler {
-    /* CSS motion-path travels along the sibling line's d= equivalent;
-       we use a separate absolutely-positioned SVG circle animated via
-       stroke-dashoffset trick instead (see JS) */
-    display: none; /* JS shows this */
-    fill: color-mix(in srgb, var(--signal-amber) 80%, #fff);
-    opacity: 0;
-}
-/* Keyframe for the traveler circle on the SVG */
+/* [4] AMBIENT — traveling dot */
 @keyframes travel-dot {
     0%   { opacity: 0;    stroke-dashoffset: var(--line-len); }
-    6%   { opacity: 0.5; }
-    94%  { opacity: 0.5; }
+    6%   { opacity: 0.6; }
+    94%  { opacity: 0.6; }
     100% { opacity: 0;    stroke-dashoffset: 0; }
 }
 .conn-traveler {
     fill: none;
-    stroke: color-mix(in srgb, var(--signal-amber) 75%, #fff);
+    stroke: rgba(255,138,61,0.8);
     stroke-width: 5;
     stroke-linecap: round;
     opacity: 0;
@@ -204,16 +195,16 @@
 
 .conn-score {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    color: var(--signal-amber);
+    color: var(--accent-amber);
     letter-spacing: 0.06em;
     display: block;
 }
 .conn-explanation {
     font-family: 'Inter', sans-serif;
     font-size: 0.65rem;
-    color: var(--slate);
+    color: var(--text-secondary);
     max-width: 240px;
     line-height: 1.4;
     display: block;
@@ -223,17 +214,17 @@
 }
 .conn-explanation.visible { opacity: 1; }
 
-/* ── Skill pills ────────────────────────────────────────────────── */
+/* ── Skill pills (dark) ─────────────────────────────────────────── */
 .skill-pill {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: var(--ink-navy);
-    background: color-mix(in srgb, var(--circuit-teal) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--circuit-teal) 40%, transparent);
+    color: var(--accent-cyan);
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
     padding: 2px 8px;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 /* ── Mobile: stacked ────────────────────────────────────────────── */
@@ -252,43 +243,46 @@
 
 /* ── Empty state ────────────────────────────────────────────────── */
 .empty-connector {
-    stroke: var(--slate);
+    stroke: rgba(255,255,255,0.1);
     stroke-width: 1.5;
     stroke-dasharray: 6 5;
     fill: none;
-    opacity: 0.4;
 }
 
 /* ── Gap filter strip ───────────────────────────────────────────── */
 .gap-strip {
-    border: 1.5px solid var(--slate);
-    background: transparent;
-    padding: 0.875rem 1.125rem;
+    background: var(--glass-fill);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
     margin-bottom: 2.5rem;
+    backdrop-filter: blur(8px);
 }
 .gap-strip label {
     font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 0.8125rem;
-    color: var(--ink-navy);
+    color: var(--text-secondary);
 }
 .gap-strip select {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
-    border: 1.5px solid var(--slate);
-    background: var(--paper);
-    color: var(--slate);
-    padding: 0.375rem 0.625rem;
+    border: 1px solid var(--glass-border);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: 0.375rem 0.75rem;
     cursor: pointer;
-    border-radius: 0;
+    border-radius: 6px;
+    transition: border-color 0.2s;
 }
 .gap-strip select:focus {
-    outline: 2px solid var(--circuit-teal);
-    outline-offset: 2px;
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(34,211,238,0.15);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -302,7 +296,7 @@
     }
     .conn-line {
         stroke-dashoffset: 0 !important;
-        stroke: var(--signal-amber) !important;
+        stroke: var(--accent-amber) !important;
         stroke-width: 1.5 !important;
         transition: none !important;
         animation: none !important;
@@ -322,10 +316,11 @@
 
 <!-- ── Page header ─────────────────────────────────────────────── -->
 <div class="mb-8">
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.75rem;color:var(--ink-navy);letter-spacing:-0.02em;">
-        Connections
+    <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Connections</p>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.875rem;color:var(--text-primary);letter-spacing:-0.02em;">
+        Your top matches
     </h1>
-    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--slate);margin-top:0.25rem;opacity:0.8;">
+    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;">
         Teammates ranked by skill overlap, shared interests, and project alignment.
     </p>
 </div>
@@ -342,8 +337,9 @@
         </select>
         {% if selected_role %}
         <a href="{% url 'find_matches' %}"
-           style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--slate);opacity:0.6;text-decoration:underline;">
-            clear filter
+           style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent-violet);text-decoration:none;opacity:0.8;transition:opacity 0.15s;"
+           onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">
+            clear filter ×
         </a>
         {% endif %}
     </form>
@@ -358,11 +354,11 @@
     <div class="schematic-row" id="row-{{ forloop.counter0 }}"
          data-row="{{ forloop.counter0 }}">
 
-        <!-- Source node: visible on first row, hidden (but space-occupying) on rest -->
+        <!-- Source node: visible on first row, hidden (space-occupying) on rest -->
         <div class="node-box node-source{% if not forloop.first %} invisible{% endif %}"
              id="source-node"
              {% if forloop.first %}data-source="1"{% endif %}>
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <div style="display:flex;align-items:center;gap:0.625rem;margin-bottom:0.625rem;">
                 <div class="node-initials">{{ profile|profile_initials }}</div>
                 <div>
                     <div class="node-name">{{ profile|profile_display_name }}</div>
@@ -373,7 +369,7 @@
                 {% for tag in profile|profile_skill_tags %}{% if forloop.counter <= 3 %}
                 <span class="skill-pill">{{ tag }}</span>
                 {% endif %}{% empty %}
-                <span style="font-size:0.65rem;opacity:0.5;font-family:'Inter',sans-serif;">No skills yet</span>
+                <span style="font-size:0.65rem;color:var(--text-secondary);opacity:0.5;font-family:'Inter',sans-serif;">No skills yet</span>
                 {% endfor %}
             </div>
         </div>
@@ -388,10 +384,10 @@
                       x1="0" y1="32" x2="300" y2="32"/>
                 <!-- Endpoint dots -->
                 <circle id="conn-dot-left-{{ forloop.counter0 }}"
-                        cx="4" cy="32" r="3.5" fill="var(--slate)"/>
+                        cx="4" cy="32" r="3.5" fill="rgba(255,255,255,0.2)"/>
                 <circle id="conn-dot-right-{{ forloop.counter0 }}"
-                        cx="296" cy="32" r="3.5" fill="var(--slate)" opacity="0"/>
-                <!-- [4] Ambient traveler: tiny bright segment rides the line -->
+                        cx="296" cy="32" r="3.5" fill="var(--accent-amber)" opacity="0"/>
+                <!-- [4] Ambient traveler -->
                 <line class="conn-traveler" id="conn-traveler-{{ forloop.counter0 }}"
                       x1="0" y1="32" x2="300" y2="32"
                       style="--line-len:300;stroke-dasharray:18 282;stroke-dashoffset:300;"/>
@@ -413,7 +409,7 @@
             {% if match.is_gap_fit %}
             <div class="gap-badge">fills {{ selected_role|lower }} gap</div>
             {% endif %}
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <div style="display:flex;align-items:center;gap:0.625rem;margin-bottom:0.625rem;">
                 <div class="node-initials">{{ match.profile|profile_initials }}</div>
                 <div>
                     <div class="node-name">{{ match.profile|profile_display_name }}</div>
@@ -424,10 +420,10 @@
                 {% for tag in match.profile|profile_skill_tags %}{% if forloop.counter <= 4 %}
                 <span class="skill-pill">{{ tag }}</span>
                 {% endif %}{% empty %}
-                <span style="font-size:0.65rem;opacity:0.5;font-family:'Inter',sans-serif;">No skills listed</span>
+                <span style="font-size:0.65rem;color:var(--text-secondary);opacity:0.5;font-family:'Inter',sans-serif;">No skills listed</span>
                 {% endfor %}
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--slate);opacity:0.4;margin-top:0.5rem;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-secondary);opacity:0.35;margin-top:0.625rem;">
                 {{ match.profile.created_at|timesince }} ago
             </div>
         </div>
@@ -442,7 +438,7 @@
 <!-- ── Empty state ─────────────────────────────────────────────── -->
 <div style="padding:3rem 0;max-width:520px;">
     <div class="node-box node-source entered" style="display:inline-block;margin-bottom:0;">
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.625rem;margin-bottom:0.625rem;">
             <div class="node-initials">{{ profile|profile_initials }}</div>
             <div>
                 <div class="node-name">{{ profile|profile_display_name }}</div>
@@ -453,31 +449,31 @@
             {% for tag in profile|profile_skill_tags %}{% if forloop.counter <= 3 %}
             <span class="skill-pill">{{ tag }}</span>
             {% endif %}{% empty %}
-            <span style="font-size:0.65rem;opacity:0.5;font-family:'Inter',sans-serif;">No skills yet</span>
+            <span style="font-size:0.65rem;color:var(--text-secondary);opacity:0.5;font-family:'Inter',sans-serif;">No skills yet</span>
             {% endfor %}
         </div>
     </div>
     <!-- Dashed incomplete line -->
     <svg width="260" height="60" viewBox="0 0 260 60" style="display:block;margin-top:-1px;" aria-hidden="true">
         <line x1="0" y1="30" x2="210" y2="30" class="empty-connector"/>
-        <circle cx="5" cy="30" r="3" fill="var(--slate)" opacity="0.4"/>
-        <circle cx="210" cy="30" r="3" fill="none" stroke="var(--slate)" stroke-width="1.5" opacity="0.35"/>
+        <circle cx="5" cy="30" r="3" fill="rgba(255,255,255,0.1)"/>
+        <circle cx="210" cy="30" r="3" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
     </svg>
-    <p style="font-family:'Space Grotesk',sans-serif;font-size:0.9375rem;font-weight:700;color:var(--ink-navy);margin-top:1rem;">
+    <p style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--text-primary);margin-top:1rem;">
         No connections yet
     </p>
-    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--slate);opacity:0.75;margin-top:0.375rem;line-height:1.6;">
+    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--text-secondary);margin-top:0.375rem;line-height:1.6;">
         {% if selected_role %}
-            No profiles fill the <strong>{{ selected_role }}</strong> gap right now. Try a different role or broaden your profile.
+            No profiles fill the <strong style="color:var(--text-primary);">{{ selected_role }}</strong> gap right now. Try a different role or broaden your profile.
         {% else %}
             Add skills and interests to your profile — we need at least one other teammate with overlapping expertise to draw your first connection.
         {% endif %}
     </p>
     <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
         {% if selected_role %}
-        <a href="{% url 'find_matches' %}" class="btn-secondary text-sm px-4 py-2 rounded-sm inline-block">Clear filter</a>
+        <a href="{% url 'find_matches' %}" class="btn-secondary text-sm px-4 py-2 rounded-xl inline-block">Clear filter</a>
         {% endif %}
-        <a href="{% url 'profile_edit' %}" class="btn-primary text-sm px-4 py-2 rounded-sm inline-block">Edit profile</a>
+        <a href="{% url 'profile_edit' %}" class="btn-primary text-sm px-4 py-2 rounded-xl inline-block">Edit profile</a>
     </div>
 </div>
 
@@ -486,7 +482,7 @@
 {% if matches %}
 <script>
 /* ═══════════════════════════════════════════════════════════════════
-   PROJECTMATCH — ANIMATION ORCHESTRATOR
+   PROJECTMATCH — ANIMATION ORCHESTRATOR (unchanged logic)
    Layers: entrance → line draw → lock-in + pulse → counter → ambient
    All gated by prefers-reduced-motion.
    ═══════════════════════════════════════════════════════════════════ */
@@ -499,23 +495,21 @@
 
     /* ── Timing constants (ms) ──────────────────────────────────── */
     const T = {
-        sourceEnter : 150,   // source node fade-in delay
-        matchBase   : 320,   // first match node entrance start
-        matchStagger: 180,   // per-match stagger
-        nodeEnterDur: 350,   // CSS transition duration (matches CSS .35s)
-        lineDelay   : 80,    // gap between node entered and line starts
-        lineDur     : 600,   // line draw duration (ms)
-        lockDelay   : 50,    // gap between line done and lock-in
-        counterDur  : 520,   // score count-up duration
-        explDelay   : 120,   // gap after counter before explanation
-        ambientDelay: 400,   // wait after all animations before ambient starts
+        sourceEnter : 150,
+        matchBase   : 320,
+        matchStagger: 180,
+        nodeEnterDur: 350,
+        lineDelay   : 80,
+        lineDur     : 600,
+        lockDelay   : 50,
+        counterDur  : 520,
+        explDelay   : 120,
+        ambientDelay: 400,
     };
 
-    /* ── Utilities ──────────────────────────────────────────────── */
     function el(id) { return document.getElementById(id); }
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    /* Count up a number from 0 to target over ~dur ms */
     function countUp(element, target, dur) {
         return new Promise(resolve => {
             if (REDUCED) { element.textContent = target + '%'; resolve(); return; }
@@ -523,7 +517,6 @@
             function tick(now) {
                 const elapsed = now - start;
                 const progress = Math.min(elapsed / dur, 1);
-                // ease-out cubic
                 const eased = 1 - Math.pow(1 - progress, 3);
                 element.textContent = Math.round(eased * target) + '%';
                 if (progress < 1) {
@@ -537,19 +530,14 @@
         });
     }
 
-    /* Draw a line: animates stroke-dashoffset via CSS transition */
     function drawLine(lineEl, dur) {
         return new Promise(resolve => {
             if (REDUCED) { lineEl.style.strokeDashoffset = '0'; resolve(); return; }
-            // Measure actual rendered length for accuracy
             let len = 300;
             try { len = lineEl.getTotalLength ? lineEl.getTotalLength() : 300; } catch(e) {}
-            // On mobile SVGs use viewBox coords, so use viewBox width
             if (MOBILE()) len = 60;
-
             lineEl.style.strokeDasharray  = len;
             lineEl.style.strokeDashoffset = len;
-            // Force reflow so transition fires
             lineEl.getBoundingClientRect();
             lineEl.style.transition = `stroke-dashoffset ${dur}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
             lineEl.style.strokeDashoffset = '0';
@@ -557,19 +545,17 @@
         });
     }
 
-    /* Lock-in: switch to amber + one-shot pulse */
     function lockIn(lineEl, dotRightEl) {
         return new Promise(resolve => {
             lineEl.style.transition = 'stroke 0.2s ease, stroke-width 0.2s ease';
-            lineEl.style.stroke = 'var(--signal-amber)';
+            lineEl.style.stroke = 'var(--accent-amber)';
             lineEl.classList.add('locked');
             if (dotRightEl) {
                 dotRightEl.style.transition = 'fill 0.2s ease, opacity 0.2s ease';
-                dotRightEl.style.fill    = 'var(--signal-amber)';
+                dotRightEl.style.fill    = 'var(--accent-amber)';
                 dotRightEl.style.opacity = '1';
             }
             if (!REDUCED) {
-                // One-shot pulse keyframe
                 lineEl.classList.add('pulse');
                 lineEl.addEventListener('animationend', () => lineEl.classList.remove('pulse'), { once: true });
             }
@@ -577,10 +563,9 @@
         });
     }
 
-    /* Ambient traveler: starts the CSS animation on the traveler line */
     function startAmbient(travelerEl, lineTotalLen) {
         if (REDUCED || !travelerEl) return;
-        const segLen = MOBILE() ? 8 : 22;   // bright segment length
+        const segLen = MOBILE() ? 8 : 22;
         const gap    = (MOBILE() ? 60 : lineTotalLen) - segLen;
         travelerEl.style.strokeDasharray  = `${segLen} ${gap}`;
         travelerEl.style.strokeDashoffset = `${MOBILE() ? 60 : lineTotalLen}`;
@@ -588,7 +573,6 @@
         travelerEl.classList.add('running');
     }
 
-    /* ── Mobile SVG: reconfigure to vertical line ───────────────── */
     function configureMobileSVG(idx) {
         if (!MOBILE()) return;
         const line     = el('conn-line-'       + idx);
@@ -601,7 +585,6 @@
         if (traveler) { traveler.setAttribute('x1','150'); traveler.setAttribute('y1','2');  traveler.setAttribute('x2','150'); traveler.setAttribute('y2','62'); }
     }
 
-    /* ── Animate one complete connection ────────────────────────── */
     async function animateConnection(idx, startAfterMs) {
         await delay(startAfterMs);
 
@@ -624,7 +607,7 @@
         await drawLine(lineEl, T.lineDur);
         await delay(T.lockDelay);
 
-        /* [3a] LOCK-IN (amber + pulse) */
+        /* [3a] LOCK-IN */
         await lockIn(lineEl, dotRight);
 
         /* [3b] SCORE COUNTER */
@@ -636,16 +619,14 @@
         await delay(T.explDelay);
         if (explEl) explEl.classList.add('visible');
 
-        /* [4] AMBIENT TRAVELER — start after everything settles */
+        /* [4] AMBIENT TRAVELER */
         await delay(T.ambientDelay);
         let lineLen = 300;
         try { lineLen = lineEl.getTotalLength ? lineEl.getTotalLength() : 300; } catch(e) {}
         startAmbient(travelerEl, lineLen);
     }
 
-    /* ── Reduced-motion: show all end-states immediately ────────── */
     function skipToEndState() {
-        // Source node
         const srcNode = document.querySelector('[data-source="1"]');
         if (srcNode) srcNode.classList.add('entered');
 
@@ -659,14 +640,13 @@
 
             if (matchNode) matchNode.classList.add('entered');
             if (lineEl)    { lineEl.style.strokeDashoffset = '0'; lineEl.classList.add('locked'); }
-            if (dotRight)  { dotRight.style.fill = 'var(--signal-amber)'; dotRight.style.opacity = '1'; }
+            if (dotRight)  { dotRight.style.fill = 'var(--accent-amber)'; dotRight.style.opacity = '1'; }
             if (labelEl)   labelEl.classList.add('visible');
             if (scoreEl)   scoreEl.textContent = (scoreEl.dataset.target || '0') + '%';
             if (explEl)    explEl.classList.add('visible');
         }
     }
 
-    /* ── [5] HOVER: focus/dim behaviour ────────────────────────── */
     function setupHover() {
         const wrap = document.getElementById('schemWrap');
         if (!wrap) return;
@@ -695,16 +675,14 @@
         return;
     }
 
-    /* [1] Source node enters first */
     async function run() {
         await delay(T.sourceEnter);
         const srcNode = document.querySelector('[data-source="1"]');
         if (srcNode) srcNode.classList.add('entered');
 
-        /* Each match's full animation chain fires staggered */
         for (let i = 0; i < TOTAL; i++) {
             const startMs = T.matchBase + i * T.matchStagger;
-            animateConnection(i, startMs); // intentionally not awaited: run in parallel, staggered by startMs
+            animateConnection(i, startMs);
         }
     }
 

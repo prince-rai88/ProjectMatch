@@ -16,143 +16,176 @@
     <style>
         /* ─── Design Tokens ─────────────────────────────────── */
         :root {
-            --ink-navy:      #0F1B2D;
-            --paper:         #F6F5F1;
-            --slate:         #2B3648;
+            --bg-base:       #0A0E17;
+            --bg-elevated:   #131826;
+            --glass-fill:    rgba(255,255,255,0.04);
+            --glass-border:  rgba(255,255,255,0.08);
+            --text-primary:  #F5F6FA;
+            --text-secondary:#9CA3B5;
+            --accent-violet: #8B5CF6;
+            --accent-cyan:   #22D3EE;
+            --accent-amber:  #FF8A3D;
+            --gradient:      linear-gradient(135deg, #8B5CF6, #22D3EE);
+            /* legacy aliases kept so animations still reference them */
+            --ink-navy:      #0A0E17;
+            --paper:         #131826;
+            --slate:         #9CA3B5;
             --signal-amber:  #FF8A3D;
-            --circuit-teal:  #4FD1C5;
+            --circuit-teal:  #22D3EE;
         }
 
-        /* ─── Typography ─────────────────────────────────────── */
+        /* ─── Base ───────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--paper);
-            color: var(--slate);
+            background-color: var(--bg-base);
+            color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
         }
-        h1, h2, h3, h4, h5, h6,
-        .font-display {
+        h1, h2, h3, h4, h5, h6, .font-display {
             font-family: 'Space Grotesk', sans-serif;
         }
-        .font-mono-data {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .font-mono-data { font-family: 'JetBrains Mono', monospace; }
 
-        /* ─── Utility overrides ──────────────────────────────── */
+        /* ─── Utility ────────────────────────────────────────── */
         [x-cloak] { display: none !important; }
 
-        /* ─── Focus rings: Circuit Teal ─────────────────────── */
+        /* ─── Focus rings ────────────────────────────────────── */
         :focus-visible {
-            outline: 2px solid var(--circuit-teal);
+            outline: 2px solid var(--accent-cyan);
             outline-offset: 3px;
         }
-        /* Amber focus ring for primary CTA buttons */
-        .btn-primary:focus-visible {
-            outline-color: var(--signal-amber);
+        .btn-primary:focus-visible { outline-color: var(--accent-violet); }
+
+        /* ─── Glass Card ─────────────────────────────────────── */
+        .glass-card {
+            background: var(--glass-fill);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
         }
 
-        /* ─── Node box shared style ──────────────────────────── */
-        .match-node {
-            border: 1.5px solid var(--slate);
-            background: var(--paper);
+        /* ─── Gradient text ──────────────────────────────────── */
+        .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ─── Primary button ─────────────────────────────────── */
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
             font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            border: none;
+            transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .btn-primary:hover {
+            filter: brightness(1.12);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(139,92,246,0.4);
+        }
+        .btn-primary:active { transform: scale(0.99); }
+
+        /* ─── Secondary button ───────────────────────────────── */
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-violet);
+            color: var(--text-primary);
         }
 
-        /* ─── Skill tag pill ────────────────────────────────── */
+        /* ─── Form inputs ────────────────────────────────────── */
+        .form-input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: 8px;
+            width: 100%;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(34,211,238,0.15);
+        }
+        .form-input option {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        /* ─── Skill pill ─────────────────────────────────────── */
         .skill-pill {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
             font-weight: 500;
             letter-spacing: 0.04em;
-            color: var(--ink-navy);
-            background: color-mix(in srgb, var(--circuit-teal) 15%, transparent);
-            border: 1px solid color-mix(in srgb, var(--circuit-teal) 40%, transparent);
+            color: var(--accent-cyan);
+            background: rgba(34,211,238,0.08);
+            border: 1px solid rgba(34,211,238,0.2);
             padding: 2px 8px;
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
-        /* ─── Signal Amber: match score + Find Matches only ─── */
+        /* ─── Score label ────────────────────────────────────── */
         .score-label {
             font-family: 'JetBrains Mono', monospace;
-            color: var(--signal-amber);
+            color: var(--accent-amber);
             font-weight: 500;
         }
-        .btn-primary {
-            background-color: var(--signal-amber);
-            color: var(--ink-navy);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.01em;
-            transition: filter 0.15s ease, transform 0.1s ease;
-        }
-        .btn-primary:hover {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
 
-        /* ─── Secondary button ───────────────────────────────── */
-        .btn-secondary {
-            background: transparent;
-            color: var(--slate);
-            border: 1.5px solid var(--slate);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 500;
-            transition: background 0.15s, color 0.15s;
-        }
-        .btn-secondary:hover {
-            background: var(--slate);
-            color: var(--paper);
-        }
-
-        /* ─── Form inputs ────────────────────────────────────── */
-        .form-input {
-            background: #fff;
-            border: 1.5px solid #D1CEC7;
-            color: var(--slate);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.875rem;
-            padding: 0.625rem 0.875rem;
-            border-radius: 6px;
-            width: 100%;
-            transition: border-color 0.15s;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: var(--circuit-teal);
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--circuit-teal) 20%, transparent);
+        /* ─── Match node (legacy alias for animation JS) ─────── */
+        .match-node {
+            background: var(--glass-fill);
+            border: 1px solid var(--glass-border);
         }
 
         /* ─── Nav ────────────────────────────────────────────── */
         .site-nav {
-            background: var(--ink-navy);
-            border-bottom: 1px solid rgba(255,255,255,0.07);
+            background: rgba(10,14,23,0.85);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
         .nav-link {
             font-family: 'Inter', sans-serif;
             font-size: 0.8125rem;
             font-weight: 500;
-            color: rgba(255,255,255,0.6);
+            color: var(--text-secondary);
             transition: color 0.15s;
         }
-        .nav-link:hover { color: rgba(255,255,255,0.95); }
+        .nav-link:hover { color: var(--text-primary); }
         .nav-wordmark {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-primary);
             font-size: 1.125rem;
             letter-spacing: -0.01em;
         }
-        .nav-wordmark span { color: var(--signal-amber); }
+        .nav-wordmark span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
         /* ─── Message alerts ─────────────────────────────────── */
         .alert-info {
-            background: color-mix(in srgb, var(--circuit-teal) 10%, var(--paper));
-            border: 1px solid color-mix(in srgb, var(--circuit-teal) 35%, transparent);
-            color: var(--slate);
-            border-radius: 6px;
+            background: rgba(34,211,238,0.06);
+            border: 1px solid rgba(34,211,238,0.2);
+            color: var(--text-primary);
+            border-radius: 8px;
             padding: 0.75rem 1rem;
             font-size: 0.875rem;
         }
@@ -182,7 +215,7 @@
                         </form>
                     {% else %}
                         <a href="{% url 'login' %}" class="nav-link">Sign in</a>
-                        <a href="{% url 'signup' %}" class="btn-primary text-sm px-4 py-1.5 rounded-sm">
+                        <a href="{% url 'signup' %}" class="btn-primary text-sm px-4 py-1.5 rounded-full">
                             Get started
                         </a>
                     {% endif %}
@@ -204,7 +237,7 @@
 
         <!-- Mobile menu -->
         <div x-show="open" @click.away="open = false" x-cloak
-            class="md:hidden border-t border-white/10 px-4 py-3 space-y-1">
+            class="md:hidden border-t border-white/10 px-4 py-3 space-y-1" style="background:var(--bg-elevated);">
             {% if user.is_authenticated %}
                 <a href="{% url 'profile_edit' %}" class="block nav-link py-2">Profile</a>
                 <a href="{% url 'find_matches' %}" class="block nav-link py-2">Connections</a>
@@ -214,7 +247,7 @@
                 </form>
             {% else %}
                 <a href="{% url 'login' %}" class="block nav-link py-2">Sign in</a>
-                <a href="{% url 'signup' %}" class="block btn-primary text-sm px-4 py-2 rounded-sm text-center mt-2">Get started</a>
+                <a href="{% url 'signup' %}" class="block btn-primary text-sm px-4 py-2 rounded-full text-center mt-2">Get started</a>
             {% endif %}
         </div>
     </nav>
@@ -232,8 +265,8 @@
     </main>
 
     <!-- ── Footer ─────────────────────────────────────────────── -->
-    <footer style="background:var(--ink-navy); border-top:1px solid rgba(255,255,255,0.07);" class="py-5">
-        <div class="mx-auto max-w-6xl px-4 text-center" style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:rgba(255,255,255,0.3); letter-spacing:0.05em;">
+    <footer style="background:var(--bg-elevated); border-top:1px solid var(--glass-border);" class="py-5">
+        <div class="mx-auto max-w-6xl px-4 text-center" style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); letter-spacing:0.05em; opacity:0.5;">
             &copy; {% now "Y" %} PROJECTMATCH — FORM ELITE CROSS-FUNCTIONAL TEAMS
         </div>
     </footer>
