@@ -145,6 +145,11 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile_edit'
 LOGOUT_REDIRECT_URL = 'home'
 
+AUTHENTICATION_BACKENDS = [
+    'matcher.backends.CaseInsensitiveModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

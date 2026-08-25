@@ -9,6 +9,8 @@ class CustomAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({"class": "form-input"})
+        if 'username' in self.fields:
+            self.fields['username'].widget.attrs.update({'autocapitalize': 'none', 'autocorrect': 'off'})
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -16,6 +18,8 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({"class": "form-input"})
+        if 'username' in self.fields:
+            self.fields['username'].widget.attrs.update({'autocapitalize': 'none', 'autocorrect': 'off'})
 
 
 class ProfileForm(forms.ModelForm):
