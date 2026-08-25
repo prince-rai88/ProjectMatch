@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}ProjectMatch — Form Elite Cross-Functional Teams{% endblock %}
+
+{% block content %}
+<div style="padding: 4rem 0 5rem;">
+
+    <!-- Hero -->
+    <div style="max-width: 640px;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;color:var(--signal-amber);text-transform:uppercase;margin-bottom:1.25rem;">
+            TF-IDF · Skill Matching · Gap-Aware Ranking
+        </p>
+        <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2rem, 5vw, 3.25rem);color:var(--ink-navy);letter-spacing:-0.03em;line-height:1.1;margin-bottom:1.25rem;">
+            Find the teammates<br>your project is missing
+        </h1>
+        <p style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--slate);opacity:0.8;line-height:1.65;max-width:480px;margin-bottom:2rem;">
+            ProjectMatch analyses your skills, interests, and project description to surface the highest-fit collaborators — ranked, explained, and gap-aware.
+        </p>
+        <div style="display:flex;gap:0.875rem;flex-wrap:wrap;align-items:center;">
+            <a href="{% url 'signup' %}" class="btn-primary rounded-sm px-6 py-3 text-sm inline-block">
+                Get started
+            </a>
+            <a href="{% url 'login' %}" class="btn-secondary rounded-sm px-6 py-3 text-sm inline-block">
+                Sign in
+            </a>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div style="border-top:1.5px solid #D1CEC7;margin:4rem 0;"></div>
+
+    <!-- Feature trio -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;">
+        <div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--signal-amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">01</p>
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9375rem;color:var(--ink-navy);margin-bottom:0.375rem;">Explainable matching</h3>
+            <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--slate);opacity:0.75;line-height:1.6;">Every connection includes a plain-language explanation of exactly why two profiles are linked.</p>
+        </div>
+        <div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--signal-amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">02</p>
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9375rem;color:var(--ink-navy);margin-bottom:0.375rem;">Gap-aware re-ranking</h3>
+            <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--slate);opacity:0.75;line-height:1.6;">Tell us what role you're missing — Designer, Developer, Domain Expert — and we re-rank instantly.</p>
+        </div>
+        <div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--signal-amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">03</p>
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9375rem;color:var(--ink-navy);margin-bottom:0.375rem;">Schematic connections</h3>
+            <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--slate);opacity:0.75;line-height:1.6;">Connections animate in as live circuit lines — locking in amber when the match scores are confirmed.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

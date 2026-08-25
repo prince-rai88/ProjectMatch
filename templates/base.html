@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ProjectMatch{% endblock %}</title>
+
+    <!-- Design System Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* ─── Design Tokens ─────────────────────────────────── */
+        :root {
+            --ink-navy:      #0F1B2D;
+            --paper:         #F6F5F1;
+            --slate:         #2B3648;
+            --signal-amber:  #FF8A3D;
+            --circuit-teal:  #4FD1C5;
+        }
+
+        /* ─── Typography ─────────────────────────────────────── */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--paper);
+            color: var(--slate);
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4, h5, h6,
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .font-mono-data {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── Utility overrides ──────────────────────────────── */
+        [x-cloak] { display: none !important; }
+
+        /* ─── Focus rings: Circuit Teal ─────────────────────── */
+        :focus-visible {
+            outline: 2px solid var(--circuit-teal);
+            outline-offset: 3px;
+        }
+        /* Amber focus ring for primary CTA buttons */
+        .btn-primary:focus-visible {
+            outline-color: var(--signal-amber);
+        }
+
+        /* ─── Node box shared style ──────────────────────────── */
+        .match-node {
+            border: 1.5px solid var(--slate);
+            background: var(--paper);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* ─── Skill tag pill ────────────────────────────────── */
+        .skill-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--ink-navy);
+            background: color-mix(in srgb, var(--circuit-teal) 15%, transparent);
+            border: 1px solid color-mix(in srgb, var(--circuit-teal) 40%, transparent);
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        /* ─── Signal Amber: match score + Find Matches only ─── */
+        .score-label {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--signal-amber);
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: var(--signal-amber);
+            color: var(--ink-navy);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            transition: filter 0.15s ease, transform 0.1s ease;
+        }
+        .btn-primary:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* ─── Secondary button ───────────────────────────────── */
+        .btn-secondary {
+            background: transparent;
+            color: var(--slate);
+            border: 1.5px solid var(--slate);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+        }
+        .btn-secondary:hover {
+            background: var(--slate);
+            color: var(--paper);
+        }
+
+        /* ─── Form inputs ────────────────────────────────────── */
+        .form-input {
+            background: #fff;
+            border: 1.5px solid #D1CEC7;
+            color: var(--slate);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: 6px;
+            width: 100%;
+            transition: border-color 0.15s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--circuit-teal);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--circuit-teal) 20%, transparent);
+        }
+
+        /* ─── Nav ────────────────────────────────────────────── */
+        .site-nav {
+            background: var(--ink-navy);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            transition: color 0.15s;
+        }
+        .nav-link:hover { color: rgba(255,255,255,0.95); }
+        .nav-wordmark {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.125rem;
+            letter-spacing: -0.01em;
+        }
+        .nav-wordmark span { color: var(--signal-amber); }
+
+        /* ─── Message alerts ─────────────────────────────────── */
+        .alert-info {
+            background: color-mix(in srgb, var(--circuit-teal) 10%, var(--paper));
+            border: 1px solid color-mix(in srgb, var(--circuit-teal) 35%, transparent);
+            color: var(--slate);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+    <nav x-data="{ open: false }" class="site-nav sticky top-0 z-50">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-14 items-center justify-between">
+
+                <!-- Wordmark -->
+                <a href="{% url 'home' %}" class="nav-wordmark">
+                    Project<span>Match</span>
+                </a>
+
+                <!-- Desktop links -->
+                <div class="hidden md:flex items-center gap-6">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile_edit' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'find_matches' %}" class="nav-link">Connections</a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link bg-transparent border-0 cursor-pointer p-0">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-link">Sign in</a>
+                        <a href="{% url 'signup' %}" class="btn-primary text-sm px-4 py-1.5 rounded-sm">
+                            Get started
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile toggle -->
+                <button @click="open = !open" type="button"
+                    class="md:hidden inline-flex items-center justify-center p-2 text-white/60 hover:text-white transition-colors"
+                    aria-label="Toggle navigation">
+                    <svg class="h-5 w-5" :class="{'hidden': open}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                    </svg>
+                    <svg class="h-5 w-5" :class="{'hidden': !open}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div x-show="open" @click.away="open = false" x-cloak
+            class="md:hidden border-t border-white/10 px-4 py-3 space-y-1">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile_edit' %}" class="block nav-link py-2">Profile</a>
+                <a href="{% url 'find_matches' %}" class="block nav-link py-2">Connections</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="block nav-link py-2 bg-transparent border-0 cursor-pointer">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="block nav-link py-2">Sign in</a>
+                <a href="{% url 'signup' %}" class="block btn-primary text-sm px-4 py-2 rounded-sm text-center mt-2">Get started</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- ── Main ───────────────────────────────────────────────── -->
+    <main class="flex-grow {% block main_class %}mx-auto w-full max-w-4xl px-4 sm:px-6 py-10{% endblock %}">
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="alert-info">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer style="background:var(--ink-navy); border-top:1px solid rgba(255,255,255,0.07);" class="py-5">
+        <div class="mx-auto max-w-6xl px-4 text-center" style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:rgba(255,255,255,0.3); letter-spacing:0.05em;">
+            &copy; {% now "Y" %} PROJECTMATCH — FORM ELITE CROSS-FUNCTIONAL TEAMS
+        </div>
+    </footer>
+
+</body>
+</html>
